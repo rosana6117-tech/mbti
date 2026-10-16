@@ -1,0 +1,513 @@
+<title>과몰입 반말방 리포트</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: 고정 GNB + 3개 화면 전환. 각 화면은 1120px 컬럼, 섹션은 얇은 패널로 구분. MBTI 기질 4색이 전체 색 체계의 축 */
+:root{
+  --bg:#EEF0F5; --panel:#FFFFFF; --ink:#1C1E2B; --mute:#666B80; --line:#D9DCE6; --soft:#F5F6FA;
+  --accent:#E8435F; --accent-ink:#FFFFFF;
+  --nt:#7A5BB0; --nf:#2F9468; --sj:#3576B0; --sp:#C99412;
+  --heat0:#F1F2F7; --heat1:#E8435F;
+  --f-display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --gnb-h:58px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14151D; --panel:#1D1F2A; --ink:#ECEDF3; --mute:#9DA1B5; --line:#2E3140; --soft:#242735;
+  --accent:#FF6380; --accent-ink:#14151D;
+  --nt:#A587DB; --nf:#53C392; --sj:#64A3DC; --sp:#E9B93E; --heat0:#232634; --heat1:#FF6380; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14151D; --panel:#1D1F2A; --ink:#ECEDF3; --mute:#9DA1B5; --line:#2E3140; --soft:#242735;
+  --accent:#FF6380; --accent-ink:#14151D;
+  --nt:#A587DB; --nf:#53C392; --sj:#64A3DC; --sp:#E9B93E; --heat0:#232634; --heat1:#FF6380; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+.gnb{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;background:var(--ink);color:var(--bg);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.gnb-in{max-width:1120px;margin:0 auto;height:var(--gnb-h);display:flex;align-items:center;gap:20px}
+.brand{font-family:var(--f-display);font-size:19px;letter-spacing:.5px;white-space:nowrap}
+.brand b{color:var(--accent);font-weight:400}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{appearance:none;border:0;background:transparent;color:inherit;opacity:.65;font:500 14px var(--f-body);padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.tab:hover{opacity:1}
+.tab[aria-selected="true"]{opacity:1;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.tab:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-top:calc(var(--gnb-h) + 24px);padding-bottom:64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.page{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.head h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,5vw,44px);line-height:1.1;margin:0;text-wrap:balance}
+.head p{margin:6px 0 0;color:var(--mute)}
+.eyebrow{font:700 11px var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+.panel h2{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0 0 4px}
+.panel .sub{color:var(--mute);font-size:12.5px;margin:0 0 14px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}
+@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kpi{background:var(--panel);padding:16px 18px}
+.kpi .l{font-size:12px;color:var(--mute)}
+.kpi .v{font-family:var(--f-num);font-size:24px;font-weight:700;margin-top:2px}
+.kpi .s{font-size:12px;color:var(--mute)}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi:last-child{grid-column:1/-1}}
+/* podium */
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:12px;margin-bottom:18px}
+.pod{border-radius:12px;padding:14px 12px;text-align:center;background:var(--soft);border:1px solid var(--line)}
+.pod .r{font-family:var(--f-display);font-size:30px;color:var(--accent)}
+.pod .nm{font-family:var(--f-display);font-size:22px}
+.pod .v{font-family:var(--f-num);font-weight:700}
+.pod.p1{padding-block:24px;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:500 12.5px var(--f-body);padding:5px 11px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--mute)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.board{display:flex;flex-direction:column;gap:3px;max-height:620px;overflow:auto;padding-right:4px}
+.row{display:grid;grid-template-columns:30px 118px 1fr 76px;gap:10px;align-items:center;font-size:13px;padding:3px 0}
+.row .rk{font-family:var(--f-num);color:var(--mute);text-align:right}
+.row .bar{height:12px;border-radius:3px;background:var(--soft);overflow:hidden}
+.row .bar i{display:block;height:100%;border-radius:3px}
+.row .val{font-family:var(--f-num);text-align:right;font-weight:700}
+.who{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}
+.who b{font-weight:700}
+.tag{font:700 10.5px var(--f-num);padding:1px 6px;border-radius:5px;color:#fff;letter-spacing:.02em}
+.t-NT{background:var(--nt)}.t-NF{background:var(--nf)}.t-SJ{background:var(--sj)}.t-SP{background:var(--sp)}
+:root .tag{color:var(--panel)}
+.awards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.aw{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--soft);display:flex;flex-direction:column;gap:2px}
+.aw .t{font-size:12px;color:var(--mute)}
+.aw .n{font-family:var(--f-display);font-size:20px}
+.aw .d{font-size:12.5px}
+.aw .d .num{font-weight:700}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--mute);font:11px var(--f-num)}
+.heat{display:grid;grid-template-columns:28px repeat(24,minmax(14px,1fr));gap:2px;min-width:480px}
+.heat div{aspect-ratio:1;border-radius:3px}
+.heat .lb{aspect-ratio:auto;font:11px var(--f-num);color:var(--mute);display:flex;align-items:center;justify-content:center}
+.scroll{overflow-x:auto}
+.cloud{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline}
+.cloud span{font-family:var(--f-display);line-height:1.1}
+.cloud small{font:11px var(--f-num);color:var(--mute);margin-left:3px}
+/* cards */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toolbar input,.toolbar select,.calc select{font:14px var(--f-body);padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
+.toolbar .chips{margin:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card-top{padding:14px 16px 12px;color:var(--panel);display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.card-top .nm{font-family:var(--f-display);font-size:28px;line-height:1}
+.card-top .rk{font-family:var(--f-num);font-weight:700;font-size:13px;opacity:.9;text-align:right}
+.card-top .mb{font-family:var(--f-num);font-weight:700;font-size:13px;letter-spacing:.05em}
+.card-top .arch{grid-column:1/-1;font-weight:700;font-size:14px;margin-top:6px}
+.bg-NT{background:var(--nt)}.bg-NF{background:var(--nf)}.bg-SJ{background:var(--sj)}.bg-SP{background:var(--sp)}
+.card-body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.hex{width:100%;max-width:260px;margin:0 auto;display:block}
+.hex text{font:500 11px var(--f-body);fill:var(--mute)}
+.hex .vv{font:700 10px var(--f-num);fill:var(--ink)}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:10px;overflow:hidden}
+.mini div{background:var(--soft);padding:7px 4px;text-align:center}
+.mini .l{font-size:10.5px;color:var(--mute)}
+.mini .v{font-family:var(--f-num);font-weight:700;font-size:13.5px}
+.desc{font-size:13px;margin:0}
+.kv{display:grid;grid-template-columns:52px 1fr;gap:6px 8px;font-size:12.5px;align-items:start}
+.kv dt{color:var(--mute)}
+.kv dd{margin:0;display:flex;flex-wrap:wrap;gap:4px;min-width:0}
+.pill{background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:12px}
+.badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto}
+.badge{font-size:11px;font-weight:700;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 8px}
+.empty{color:var(--mute);padding:30px;text-align:center}
+/* chem */
+.netwrap{position:relative;border-radius:12px;background:var(--soft);overflow:hidden}
+#net{width:100%;height:560px;display:block;touch-action:none}
+#net text{font:700 11px var(--f-body);fill:var(--ink);pointer-events:none;paint-order:stroke;stroke:var(--soft);stroke-width:3px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.side h3{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0}
+.lst{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.lst li{display:grid;grid-template-columns:1fr 54px;gap:8px;align-items:center;font-size:13px;padding:5px 8px;border-radius:8px;background:var(--soft);cursor:pointer}
+.lst li:hover{outline:1px solid var(--line)}
+.lst .sc{font-family:var(--f-num);font-weight:700;text-align:right}
+.calc{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.calc .x{font-family:var(--f-display);font-size:22px;color:var(--accent)}
+.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:16px 0 6px}
+.score .big{font-family:var(--f-num);font-size:56px;font-weight:700;line-height:1;color:var(--accent)}
+.score .verdict{font-family:var(--f-display);font-size:22px}
+.brk{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.brk .r{display:grid;grid-template-columns:84px 1fr 40px;gap:10px;align-items:center;font-size:12.5px}
+.brk .b{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.brk .b i{display:block;height:100%;background:var(--ink)}
+.matrix{display:grid;gap:1px;min-width:max-content}
+.matrix div{width:16px;height:16px;border-radius:2px;cursor:pointer}
+.matrix .h{font:10px var(--f-body);color:var(--mute);cursor:default;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;width:auto;white-space:nowrap}
+.matrix .v{writing-mode:vertical-rl;justify-content:flex-start;height:40px;padding:0 0 4px}
+.toplist{counter-reset:t;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.toplist li{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;padding:7px 10px;border-radius:10px;background:var(--soft);font-size:13px;cursor:pointer}
+.toplist li::before{counter-increment:t;content:counter(t);font-family:var(--f-num);font-weight:700;color:var(--accent)}
+.toplist .pr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.note{font-size:12px;color:var(--mute);margin:0}
+@media (max-width:560px){
+  .brand span{display:none}.gnb-in{gap:8px}.tab{padding:7px 10px;font-size:13px}
+  .row{grid-template-columns:24px 100px 1fr 62px;gap:6px}
+  #net{height:440px}.score .big{font-size:44px}
+  .calc{grid-template-columns:1fr}.calc .x{text-align:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<nav class="gnb" aria-label="페이지 전환">
+  <div class="gnb-in">
+    <div class="brand">과몰입 <b>반말방</b> <span>리포트</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-rank" data-p="rank" aria-selected="true">채팅 랭킹</button>
+      <button class="tab" role="tab" id="tab-cards" data-p="cards" aria-selected="false">캐릭터 카드</button>
+      <button class="tab" role="tab" id="tab-chem" data-p="chem" aria-selected="false">관계·궁합</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<!-- PAGE 1 -->
+<section class="page" id="p-rank" role="tabpanel" aria-labelledby="tab-rank">
+  <div class="head">
+    <div class="eyebrow">2030 MBTI 과몰입 반말방 · 채팅 랭킹</div>
+    <h1>누가 이 방을 굴리고 있나</h1>
+    <p id="period"></p>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>부문별 리더보드</h2>
+      <p class="sub" id="boardSub">부문을 고르면 순위가 바뀜. 비율 지표는 300건 이상 멤버만 집계.</p>
+      <div class="chips" id="metricChips"></div>
+      <div class="podium" id="podium"></div>
+      <div class="board" id="board"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div class="panel">
+        <h2>반말방 어워즈</h2>
+        <p class="sub">부문별 1위</p>
+        <div class="awards" id="awards"></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>일별 메시지 추이</h2>
+    <p class="sub" id="dailySub"></p>
+    <div id="dailyChart"></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>요일 × 시간대 히트맵</h2>
+      <p class="sub">색이 진할수록 메시지가 많음</p>
+      <div class="scroll"><div class="heat" id="heat"></div></div>
+    </div>
+    <div class="panel">
+      <h2>이 방의 키워드</h2>
+      <p class="sub">전체 대화 명사 빈도 상위 (멤버 닉네임 제외)</p>
+      <div class="cloud" id="cloud"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 2 -->
+<section class="page" id="p-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
+  <div class="head">
+    <div class="eyebrow">캐릭터 카드</div>
+    <h1>41인의 캐릭터 도감</h1>
+    <p>육각형 스탯은 멤버 41명 사이의 상대 순위(20~100). 메시지 200건 미만 멤버는 표본이 작아 중간값 쪽으로 보정됨.</p>
+  </div>
+  <div class="panel" style="padding:14px 16px">
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="닉네임·MBTI 검색" aria-label="닉네임 또는 MBTI 검색">
+      <div class="chips" id="tempChips"></div>
+      <select id="sort" aria-label="정렬">
+        <option value="n">메시지 많은 순</option>
+        <option value="perday">일평균 순</option>
+        <option value="hexsum">스탯 합계 순</option>
+        <option value="mbti">MBTI 순</option>
+      </select>
+    </div>
+  </div>
+  <div class="panel" style="padding:14px 16px">
+    <p class="note"><b>스탯 기준</b> · 화력: 총 메시지량 · 텐션: ㅋㅋ·느낌표 사용률 · 공감: ㅇㅈ/ㄹㅇ/헐/ㅠ 등 리액션 비율 · 진지: 평균 글자 수 · 짤력: 이모티콘·사진 비율 · 인싸력: 대화 상대 다양성 + 멘션 받은 수</p>
+  </div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<!-- PAGE 3 -->
+<section class="page" id="p-chem" role="tabpanel" aria-labelledby="tab-chem" hidden>
+  <div class="head">
+    <div class="eyebrow">관계도 · 궁합도</div>
+    <h1>누구랑 제일 잘 맞나</h1>
+    <p>선은 2분 이내 주고받은 대화와 멘션으로 계산. 노드를 누르면 그 사람 기준 궁합 순위가 나옴.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>관계도</h2>
+      <p class="sub">원 크기 = 메시지량 · 선 굵기 = 대화 밀도 · 드래그로 이동</p>
+      <div class="netwrap"><svg id="net" role="img" aria-label="멤버 관계 네트워크"></svg></div>
+      <div class="legend"><span><i style="background:var(--nt)"></i>NT 분석가</span><span><i style="background:var(--nf)"></i>NF 외교관</span><span><i style="background:var(--sj)"></i>SJ 관리자</span><span><i style="background:var(--sp)"></i>SP 탐험가</span></div>
+    </div>
+    <div class="panel side" id="side"></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>궁합 계산기</h2>
+      <p class="sub">대화 케미 45% · 생활 리듬 20% · MBTI 궁합 20% · 말투 싱크 15%</p>
+      <div class="calc">
+        <select id="ca" aria-label="첫 번째 멤버"></select>
+        <div class="x">×</div>
+        <select id="cb" aria-label="두 번째 멤버"></select>
+      </div>
+      <div id="calcOut"></div>
+    </div>
+    <div class="panel">
+      <h2>베스트 케미 TOP 10</h2>
+      <p class="sub">궁합 점수 기준 · 누르면 계산기에 반영</p>
+      <ol class="toplist" id="bestPairs"></ol>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>궁합 매트릭스</h2>
+    <p class="sub">메시지 많은 순 정렬 · 칸을 누르면 계산기에 반영 · 진할수록 궁합 높음</p>
+    <div class="scroll"><div class="matrix" id="matrix"></div></div>
+  </div>
+</section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>const D={"users":[{"id":"상상 INTP 여 34","name":"상상","mbti":"INTP","sex":"여","age":"34","n":19932,"days":60,"first":"2026-08-10","chars":184743,"avglen":9.3,"kchar":3946,"emo":2,"photo":138,"video":1,"dele":0,"q":1605,"agree":559,"cry":312,"link":14,"hours":[893,724,244,181,86,0,2,26,350,1699,2698,1350,339,818,1317,1004,1664,850,1288,671,1287,1007,896,538],"wd":[3256,4330,3025,4723,2321,564,1713],"opener":2,"ment_out":34,"ment_in":23,"words":["긍데","꼰햄","와따시","호냥이","와따시능","도키햄"],"habit":["아","하","오","ㅇㅇ","ㅇㅈ"],"best":[[1,3546],[3,2756],[2,2409]],"perday":293.1,"span":68,"night":0.10676299418021272,"morning":0.1042042946016456,"peak":10,"txt":19775,"k":768,"hex":[99,27,54,45,23,95]},{"id":"치치 INTP 여 32","name":"치치","mbti":"INTP","sex":"여","age":"32","n":19505,"days":54,"first":"2026-08-10","chars":174874,"avglen":9.3,"kchar":17611,"emo":292,"photo":424,"video":8,"dele":0,"q":1549,"agree":725,"cry":156,"link":33,"hours":[501,672,378,205,68,5,25,69,258,1450,2347,1350,297,1197,2022,2181,1734,1575,311,295,1061,961,439,104],"wd":[3396,4052,3464,4682,2513,205,1193],"opener":2,"ment_out":64,"ment_in":21,"words":["언니","대전","샵검색","초이햄","마즘","대표"],"habit":["오","ㅇㅈ","하","와","아"],"best":[[2,3582],[0,3546],[4,2791]],"perday":286.8,"span":68,"night":0.09351448346577801,"morning":0.09238656754678287,"peak":10,"txt":18757,"k":1643,"hex":[97,46,62,45,54,85]},{"id":"밤글 ENTP 여 32","name":"밤글","mbti":"ENTP","sex":"여","age":"32","n":16032,"days":56,"first":"2026-08-10","chars":129092,"avglen":8.6,"kchar":14488,"emo":824,"photo":196,"video":7,"dele":0,"q":1154,"agree":377,"cry":211,"link":25,"hours":[1090,1028,692,581,100,0,0,0,0,209,30,154,318,2030,2708,2283,551,961,827,820,905,497,138,110],"wd":[4038,2964,3512,3047,1243,94,1134],"opener":1,"ment_out":22,"ment_in":13,"words":["한국","언니","파키스탄","오빠","이야기","나라"],"habit":["오","아","ㅇㅈ","응","ㅇㅋ"],"best":[[1,3582],[0,2409],[4,2127]],"perday":235.8,"span":68,"night":0.21775199600798403,"morning":0.013036427145708582,"peak":14,"txt":15014,"k":1533,"hex":[95,56,50,37,76,56]},{"id":"호냥 ENFP 여 33","name":"호냥","mbti":"ENFP","sex":"여","age":"33","n":15118,"days":41,"first":"2026-08-10","chars":141580,"avglen":10.0,"kchar":18662,"emo":770,"photo":169,"video":5,"dele":0,"q":1037,"agree":484,"cry":248,"link":16,"hours":[2,0,0,0,0,2,18,184,717,1412,1567,1079,424,958,1634,1982,1969,1343,892,238,347,281,61,8],"wd":[2864,3485,2894,3157,2184,338,196],"opener":1,"ment_out":11,"ment_in":6,"words":["언니","천안","오빠","퓨퓨언니"],"habit":["아","ㄹㅇ","아하","ㅇㅎ"],"best":[[0,2756],[1,2451],[4,1878]],"perday":222.3,"span":68,"night":0.00013229263130043657,"morning":0.15418706178065883,"peak":15,"txt":14179,"k":1553,"hex":[93,62,66,54,74,58]},{"id":"나낭 ISTJ 여 34","name":"나낭","mbti":"ISTJ","sex":"여","age":"34","n":11856,"days":53,"first":"2026-08-10","chars":158931,"avglen":13.5,"kchar":28055,"emo":41,"photo":110,"video":0,"dele":0,"q":708,"agree":336,"cry":332,"link":5,"hours":[8,274,312,164,0,0,1,1,508,771,1140,1019,354,748,1645,1837,1604,302,75,189,558,299,34,13],"wd":[3238,2343,2378,2145,1302,92,358],"opener":1,"ment_out":18,"ment_in":29,"words":["오빠","잡채","얘기","정지쒸","옵세션"],"habit":["개웃기다","개웃기네","헐","ㄹㅇ","ㄷ ㄷ"],"best":[[1,2791],[2,2127],[3,1878]],"perday":174.4,"span":68,"night":0.06393387314439947,"morning":0.10804655870445344,"peak":15,"txt":11732,"k":1949,"hex":[91,76,74,85,35,74]},{"id":"심심 ESTP 남 29","name":"심심","mbti":"ESTP","sex":"남","age":"29","n":10155,"days":60,"first":"2026-08-10","chars":65034,"avglen":6.6,"kchar":5088,"emo":179,"photo":47,"video":0,"dele":0,"q":343,"agree":677,"cry":12,"link":1,"hours":[809,76,1,0,0,1,6,49,43,686,1169,328,67,513,697,581,366,1610,716,219,803,459,563,393],"wd":[1440,2020,2808,2073,1520,58,236],"opener":2,"ment_out":18,"ment_in":3,"words":["누나","요새","오키","옥형","떼잉","업무"],"habit":["ㅇㅈ","ㅇㅇ","오","드가자","아하"],"best":[[0,1505],[2,1295],[1,954]],"perday":149.3,"span":68,"night":0.08724766125061546,"morning":0.07720334810438208,"peak":17,"txt":9872,"k":599,"hex":[89,37,83,23,40,83]},{"id":"시월 INTP 남 35","name":"시월","mbti":"INTP","sex":"남","age":"35","n":9920,"days":58,"first":"2026-08-10","chars":91647,"avglen":9.5,"kchar":3980,"emo":0,"photo":289,"video":0,"dele":0,"q":458,"agree":299,"cry":130,"link":19,"hours":[20,3,0,0,0,0,0,0,19,725,712,1017,214,881,1419,762,1243,1245,703,248,219,229,147,114],"wd":[1315,1884,3308,2164,1024,9,216],"opener":0,"ment_out":7,"ment_in":19,"words":["가태","인천","다짐완","회사","거덜","소주"],"habit":["ㅈㅅ","ㅇㅇㅋ","어허","ㅁㅊ","ㅇㅎ"],"best":[[1,1459],[0,1366],[3,1252]],"perday":145.9,"span":68,"night":0.002318548387096774,"morning":0.075,"peak":14,"txt":9693,"k":554,"hex":[87,40,56,48,50,87]},{"id":"도돌 ESTP 남 30","name":"도돌","mbti":"ESTP","sex":"남","age":"30","n":8770,"days":60,"first":"2026-08-10","chars":72148,"avglen":8.4,"kchar":3266,"emo":29,"photo":71,"video":1,"dele":0,"q":621,"agree":198,"cry":41,"link":2,"hours":[437,211,3,83,4,1,3,26,251,660,1009,316,565,195,841,636,530,814,298,175,289,795,398,230],"wd":[1353,1772,1821,1748,1183,199,694],"opener":1,"ment_out":23,"ment_in":40,"words":["부산","서울","고민","치눕","여행","속초"],"habit":["ㅇㅇ","하","ㅇㅈ","아","ㅇㅎ"],"best":[[0,1476],[1,1181],[5,816]],"perday":129.0,"span":68,"night":0.08415051311288484,"morning":0.10718358038768529,"peak":10,"txt":8630,"k":367,"hex":[85,33,33,35,31,99]},{"id":"니아 INFP 여 39+2","name":"니아","mbti":"INFP","sex":"여","age":"39+2","n":8001,"days":60,"first":"2026-08-10","chars":121738,"avglen":16.2,"kchar":10844,"emo":302,"photo":225,"video":2,"dele":0,"q":897,"agree":81,"cry":286,"link":52,"hours":[127,34,3,0,0,28,164,142,228,436,423,611,162,181,691,800,618,725,484,533,521,562,326,202],"wd":[888,1571,1374,2153,1100,205,710],"opener":6,"ment_out":41,"ment_in":12,"words":["요가","어무니","부산","느낌","맥주"],"habit":["[네이버지도]","ㅋㅋㅋㄱㅋ","ㅋㅋㅋㄱㄲ","ㅋㅋㅋㄱㅋㅋㅋ","까비"],"best":[[0,1179],[3,1095],[1,1060]],"perday":117.7,"span":68,"night":0.020497437820272465,"morning":0.12123484564429446,"peak":15,"txt":7507,"k":1448,"hex":[83,85,64,95,81,89]},{"id":"퓨퓨 ESTP 여 34","name":"퓨퓨","mbti":"ESTP","sex":"여","age":"34","n":7259,"days":53,"first":"2026-08-10","chars":79837,"avglen":11.3,"kchar":4540,"emo":91,"photo":118,"video":2,"dele":0,"q":814,"agree":144,"cry":104,"link":9,"hours":[35,29,2,154,38,0,31,4,46,1183,1285,863,179,131,852,846,707,517,177,32,67,41,28,12],"wd":[1172,1905,1748,1089,783,272,290],"opener":1,"ment_out":13,"ment_in":11,"words":["레알","진돗개","얘기","꼰옵","혼자"],"habit":["헐","아니","뭐야","마자"],"best":[[1,1493],[4,1184],[3,1080]],"perday":106.8,"span":68,"night":0.03554208568673371,"morning":0.17412866786058687,"peak":10,"txt":7052,"k":463,"hex":[81,52,42,65,48,64]},{"id":"초이 ESTJ 남 33","name":"초이","mbti":"ESTJ","sex":"남","age":"33","n":6483,"days":58,"first":"2026-08-10","chars":86135,"avglen":14.0,"kchar":3257,"emo":86,"photo":268,"video":7,"dele":0,"q":242,"agree":124,"cry":43,"link":24,"hours":[469,382,469,56,4,0,5,42,394,371,679,581,78,252,428,743,247,533,277,33,106,65,108,161],"wd":[605,1495,872,1669,905,174,763],"opener":0,"ment_out":35,"ment_in":25,"words":["누나","샵검색","학교","엣티제","대학원","부산"],"habit":["껄껄","ㄷㄷ","오호","ㅇㅇ","ㄷㄷㄷ"],"best":[[1,1298],[0,1206],[2,964]],"perday":95.3,"span":68,"night":0.2128644146228598,"morning":0.1252506555606972,"peak":15,"txt":6155,"k":436,"hex":[80,42,29,89,68,72]},{"id":"현타 ESFJ 남 34","name":"현타","mbti":"ESFJ","sex":"남","age":"34","n":5551,"days":58,"first":"2026-08-10","chars":64294,"avglen":12.2,"kchar":7864,"emo":163,"photo":108,"video":0,"dele":0,"q":387,"agree":151,"cry":94,"link":5,"hours":[155,191,63,0,0,0,1,10,56,61,59,246,116,253,494,350,556,585,417,360,516,636,269,157],"wd":[677,1618,1181,1360,314,115,286],"opener":3,"ment_out":11,"ment_in":23,"words":["모야","누나","마자","김치찌개","조신","오징어"],"habit":["마자","아하","그치","맞아","헐"],"best":[[4,844],[0,806],[1,595]],"perday":81.6,"span":68,"night":0.07368041794271303,"morning":0.023058908304809944,"peak":21,"txt":5290,"k":677,"hex":[78,66,60,76,62,97]},{"id":"창식 INTJ 남 34","name":"창식","mbti":"INTJ","sex":"남","age":"34","n":5084,"days":59,"first":"2026-08-10","chars":51254,"avglen":10.4,"kchar":494,"emo":108,"photo":53,"video":1,"dele":0,"q":321,"agree":117,"cry":68,"link":4,"hours":[72,5,4,3,0,0,1,28,89,253,590,322,227,271,568,583,267,496,491,284,226,166,88,50],"wd":[1133,1125,1165,1022,350,56,233],"opener":1,"ment_out":10,"ment_in":20,"words":["야근","헐랭","낚시","샵검색","퇴근","용인"],"habit":["크앙","헐랭","오","굿","ㅇㅇ"],"best":[[0,912],[1,769],[3,636]],"perday":74.8,"span":68,"night":0.016522423288749016,"morning":0.07297403619197482,"peak":10,"txt":4914,"k":89,"hex":[76,21,46,60,52,93]},{"id":"돼요 ISTP 남 39+1","name":"돼요","mbti":"ISTP","sex":"남","age":"39+1","n":4942,"days":60,"first":"2026-08-10","chars":62688,"avglen":13.6,"kchar":1063,"emo":210,"photo":49,"video":0,"dele":0,"q":407,"agree":73,"cry":56,"link":13,"hours":[142,37,0,3,8,7,105,69,174,346,395,302,156,392,290,217,354,489,371,200,259,315,191,120],"wd":[905,1139,691,1083,515,233,376],"opener":9,"ment_out":59,"ment_in":10,"words":["잇팁","남한산성","주식","식이","안양","알콜"],"habit":["ㅇㅇ","오운완","ㅇㅈ","ㅇㅎ","짝"],"best":[[3,840],[0,811],[1,596]],"perday":72.7,"span":68,"night":0.03844597329016593,"morning":0.14042897612302713,"peak":17,"txt":4616,"k":170,"hex":[74,29,35,87,66,81]},{"id":"정지 INTJ 여 34","name":"정지","mbti":"INTJ","sex":"여","age":"34","n":4857,"days":50,"first":"2026-08-10","chars":45488,"avglen":10.1,"kchar":8328,"emo":208,"photo":103,"video":5,"dele":0,"q":263,"agree":136,"cry":103,"link":9,"hours":[158,184,340,129,0,0,2,1,1,13,120,132,173,325,811,796,166,188,156,205,392,398,118,49],"wd":[1471,1100,489,1115,317,31,334],"opener":0,"ment_out":10,"ment_in":12,"words":["나낭쒸","볼펜","인형","밤글쒸","가방","태닝"],"habit":["오","아","ㄹㅇ","마자","헐"],"best":[[2,1576],[4,1538],[1,977]],"perday":71.4,"span":68,"night":0.16697549927939057,"morning":0.0035001029442042414,"peak":14,"txt":4524,"k":713,"hex":[72,78,68,57,78,35]},{"id":"무무 ENFP 여 20","name":"무무","mbti":"ENFP","sex":"여","age":"20","n":4588,"days":47,"first":"2026-08-10","chars":41255,"avglen":9.7,"kchar":6598,"emo":173,"photo":191,"video":0,"dele":0,"q":375,"agree":128,"cry":106,"link":22,"hours":[174,98,30,69,84,11,108,56,318,186,244,349,126,182,225,300,283,368,224,173,280,262,326,112],"wd":[955,751,1065,690,316,219,592],"opener":1,"ment_out":13,"ment_in":20,"words":["언니","오빠","정답","아빠","엄마","굿모닝"],"habit":["웅","응","오옹","옹","헐"],"best":[[0,598],[13,579],[3,487]],"perday":67.5,"span":68,"night":0.09917175239755885,"morning":0.14559721011333915,"peak":17,"txt":4264,"k":935,"hex":[70,83,72,51,89,78]},{"id":"도키 INFJ 남 36","name":"도키","mbti":"INFJ","sex":"남","age":"36","n":3735,"days":60,"first":"2026-08-10","chars":50876,"avglen":14.3,"kchar":1134,"emo":49,"photo":104,"video":4,"dele":0,"q":389,"agree":58,"cry":53,"link":15,"hours":[13,60,16,20,0,0,0,38,135,84,376,203,233,138,180,348,307,426,269,180,288,157,180,84],"wd":[545,826,667,958,387,233,119],"opener":0,"ment_out":0,"ment_in":8,"words":["잔업","안산","작년","은근","느낌","친구"],"habit":["그치","앜ㅋㅋ","ㅋㅋㅋㄱ","헐","엌"],"best":[[0,643],[1,514],[3,436]],"perday":54.9,"span":68,"night":0.02918340026773762,"morning":0.06880856760374833,"peak":17,"txt":3553,"k":409,"hex":[68,64,37,91,56,76]},{"id":"춘삼 ESTP 여 29","name":"춘삼","mbti":"ESTP","sex":"여","age":"29","n":3403,"days":10,"first":"2026-10-06","chars":26708,"avglen":8.0,"kchar":4199,"emo":33,"photo":12,"video":0,"dele":0,"q":141,"agree":108,"cry":124,"link":1,"hours":[479,407,268,109,5,0,9,2,31,107,88,48,58,72,170,35,152,431,278,28,196,156,109,165],"wd":[311,1055,845,380,164,57,591],"opener":1,"ment_out":2,"ment_in":2,"words":["언니","친구","건강","곱창","모야","경주"],"habit":["굿","와우","아","와","ㅇㅈ"],"best":[[7,773],[0,736],[5,528]],"perday":309.4,"span":11,"night":0.3726124008228034,"morning":0.043784895680282106,"peak":0,"txt":3351,"k":276,"hex":[66,48,81,29,37,37]},{"id":"조아 ESFP 여 37","name":"조아","mbti":"ESFP","sex":"여","age":"37","n":3277,"days":46,"first":"2026-08-25","chars":27864,"avglen":10.6,"kchar":2394,"emo":513,"photo":175,"video":0,"dele":0,"q":468,"agree":76,"cry":101,"link":13,"hours":[9,0,1,1,3,23,133,73,136,97,56,54,117,83,60,366,244,273,234,262,645,324,60,23],"wd":[552,649,249,810,118,221,678],"opener":0,"ment_out":20,"ment_in":16,"words":["돼요옵","울대","언니","저녁","부지런","방귀"],"habit":["짝","헐","멋지다","앜ㅋㅋㅋ","와.."],"best":[[13,591],[0,496],[11,435]],"perday":61.8,"span":53,"night":0.0042722001830942935,"morning":0.13396399145559965,"peak":20,"txt":2634,"k":294,"hex":[64,72,80,62,97,80]},{"id":"전기 ESTP 남 27","name":"전기","mbti":"ESTP","sex":"남","age":"27","n":2924,"days":42,"first":"2026-08-11","chars":26529,"avglen":9.2,"kchar":1419,"emo":24,"photo":15,"video":0,"dele":0,"q":201,"agree":184,"cry":2,"link":0,"hours":[367,112,32,64,6,9,11,11,17,218,116,75,14,76,61,71,189,277,122,143,297,334,107,195],"wd":[318,626,607,739,323,29,282],"opener":1,"ment_out":1,"ment_in":12,"words":["청주","에헤이","누나","토요일","과거","대전"],"habit":["ㅇㅈ","오","에헤이","ㄷㄷ","ㄷㄷㄷ"],"best":[[0,672],[1,504],[5,459]],"perday":43.6,"span":67,"night":0.19870041039671682,"morning":0.08789329685362517,"peak":0,"txt":2888,"k":209,"hex":[62,44,76,42,39,62]},{"id":"띠링 ENTJ 여 33","name":"띠링","mbti":"ENTJ","sex":"여","age":"33","n":2632,"days":30,"first":"2026-08-31","chars":42709,"avglen":16.7,"kchar":8694,"emo":35,"photo":29,"video":0,"dele":0,"q":210,"agree":126,"cry":78,"link":3,"hours":[156,147,127,0,0,0,0,0,12,38,109,66,25,289,399,447,268,125,110,73,60,118,20,43],"wd":[306,456,677,661,417,1,114],"opener":0,"ment_out":0,"ment_in":2,"words":["선배","안뇽","잇티제","아버님","마자","얘기"],"habit":["맞아","마자","아","와","아하"],"best":[[1,588],[2,508],[0,455]],"perday":56.0,"span":47,"night":0.16337386018237082,"morning":0.018996960486322188,"peak":15,"txt":2552,"k":674,"hex":[60,97,91,99,42,54]},{"id":"젠젠 ISFP 여 34","name":"젠젠","mbti":"ISFP","sex":"여","age":"34","n":2373,"days":28,"first":"2026-08-10","chars":19941,"avglen":9.0,"kchar":2185,"emo":98,"photo":32,"video":1,"dele":0,"q":216,"agree":48,"cry":52,"link":3,"hours":[25,0,0,0,0,0,4,29,93,214,234,259,132,64,41,44,26,27,118,115,164,195,472,117],"wd":[828,411,388,353,136,12,245],"opener":1,"ment_out":4,"ment_in":10,"words":["비버","꽁티","안뇽","웃음","언니","샵검색"],"habit":["아","푸하하","캬","맞아","아아"],"best":[[1,288],[5,239],[0,226]],"perday":34.9,"span":68,"night":0.01053518752633797,"morning":0.14327855035819637,"peak":22,"txt":2222,"k":446,"hex":[58,91,58,40,70,91]},{"id":"주디 INTP 여 33","name":"주디","mbti":"INTP","sex":"여","age":"33","n":2070,"days":38,"first":"2026-08-11","chars":26260,"avglen":13.4,"kchar":535,"emo":62,"photo":46,"video":1,"dele":0,"q":86,"agree":19,"cry":2,"link":2,"hours":[120,251,0,0,3,5,12,152,33,57,96,9,63,36,18,49,56,223,116,59,225,300,31,156],"wd":[304,204,321,781,151,33,276],"opener":3,"ment_out":3,"ment_in":10,"words":["엄마","자전거","클럽","과자","바퀴벌레","화장"],"habit":["ㅋㄱㅋㄱㅋㄱㅋ","ㅋㅋㄱㅋㄱㅋ","ㅋㅋㄱㅋㄱㅋㄱㅋ","마자","ㅋㄱㅋㄱㅋ"],"best":[[3,342],[0,335],[8,181]],"perday":30.9,"span":67,"night":0.18067632850241547,"morning":0.12270531400966184,"peak":21,"txt":1959,"k":108,"hex":[56,50,21,83,64,50]},{"id":"차니 ISFJ 여 36","name":"차니","mbti":"ISFJ","sex":"여","age":"36","n":1984,"days":10,"first":"2026-10-06","chars":20874,"avglen":11.3,"kchar":4754,"emo":128,"photo":11,"video":1,"dele":0,"q":107,"agree":56,"cry":178,"link":0,"hours":[41,50,0,0,0,0,1,1,9,145,153,139,32,209,70,68,31,1,225,73,254,284,139,59],"wd":[19,512,538,731,91,92,1],"opener":0,"ment_out":1,"ment_in":4,"words":["도도리","지짜","방가워","모두","대전","굳모닝"],"habit":["응","세상에","헐","근데"],"best":[[1,569],[7,440],[5,370]],"perday":180.4,"span":11,"night":0.04586693548387097,"morning":0.07862903225806452,"peak":21,"txt":1844,"k":383,"hex":[54,81,95,65,83,31]},{"id":"꼰돼 ENTP 남 39","name":"꼰돼","mbti":"ENTP","sex":"남","age":"39","n":1823,"days":7,"first":"2026-09-05","chars":13847,"avglen":7.9,"kchar":317,"emo":58,"photo":20,"video":0,"dele":0,"q":53,"agree":31,"cry":17,"link":6,"hours":[0,0,0,0,0,0,0,0,111,403,735,0,0,31,33,133,318,13,0,3,43,0,0,0],"wd":[338,388,431,440,144,46,36],"opener":0,"ment_out":0,"ment_in":15,"words":["요리","사사게오","사회","시트","에프","치와와"],"habit":["그냥","근데","야","그러니까","와"],"best":[[3,507],[1,356],[0,327]],"perday":43.4,"span":42,"night":0.0,"morning":0.28195282501371366,"peak":10,"txt":1749,"k":56,"hex":[52,25,31,27,58,33]},{"id":"감자 INFJ 남 34","name":"감자","mbti":"INFJ","sex":"남","age":"34","n":1656,"days":30,"first":"2026-09-10","chars":14785,"avglen":12.0,"kchar":1840,"emo":395,"photo":22,"video":0,"dele":0,"q":93,"agree":15,"cry":4,"link":0,"hours":[23,93,11,34,0,0,2,3,0,17,123,118,95,74,134,105,111,41,62,162,147,143,138,20],"wd":[342,324,318,441,50,12,169],"opener":1,"ment_out":0,"ment_in":3,"words":["운동","영화","헬스","굿모닝","햄스터","박스"],"habit":["응","굿모닝","반가워","고생했어!","맞아"],"best":[[0,378],[2,324],[1,297]],"perday":44.8,"span":37,"night":0.09722222222222222,"morning":0.013285024154589372,"peak":19,"txt":1228,"k":249,"hex":[50,89,23,74,99,60]},{"id":"라쿤 ENFJ 여 34","name":"라쿤","mbti":"ENFJ","sex":"여","age":"34","n":1460,"days":5,"first":"2026-10-12","chars":14667,"avglen":10.1,"kchar":527,"emo":2,"photo":11,"video":0,"dele":0,"q":103,"agree":52,"cry":4,"link":7,"hours":[172,4,0,0,0,0,0,0,0,5,212,62,35,0,15,32,29,75,67,86,40,216,181,229],"wd":[285,155,236,477,307,0,0],"opener":0,"ment_out":1,"ment_in":3,"words":["바둑","아잌","가을","읏챠","문어","옥상"],"habit":["그렇구나","응","아하","오","와우"],"best":[[0,465],[5,311],[6,206]],"perday":292.0,"span":5,"night":0.12054794520547946,"morning":0.003424657534246575,"peak":23,"txt":1446,"k":137,"hex":[48,54,48,57,25,42]},{"id":"흐흐 ISTP 여 37","name":"흐흐","mbti":"ISTP","sex":"여","age":"37","n":1420,"days":55,"first":"2026-08-10","chars":19392,"avglen":15.4,"kchar":4018,"emo":69,"photo":36,"video":0,"dele":0,"q":202,"agree":23,"cry":65,"link":5,"hours":[117,48,1,4,11,13,23,23,27,31,41,44,35,46,92,71,61,86,107,32,136,133,123,115],"wd":[298,240,274,311,162,61,74],"opener":2,"ment_out":6,"ment_in":25,"words":["낚시","잇팁","남한산성","남문"],"habit":["허거덩","오호","돼요형","오홍","웅웅"],"best":[[13,310],[11,246],[15,195]],"perday":20.9,"span":68,"night":0.12746478873239436,"morning":0.07323943661971831,"peak":20,"txt":1260,"k":453,"hex":[46,99,85,93,87,66]},{"id":"바밤 ISTJ 여 30","name":"바밤","mbti":"ISTJ","sex":"여","age":"30","n":1287,"days":34,"first":"2026-08-10","chars":14698,"avglen":12.3,"kchar":2180,"emo":81,"photo":10,"video":2,"dele":0,"q":83,"agree":71,"cry":21,"link":2,"hours":[1,0,2,0,0,0,0,0,4,37,17,150,13,94,153,116,151,444,51,0,2,50,2,0],"wd":[280,341,413,235,16,2,0],"opener":0,"ment_out":5,"ment_in":4,"words":["언니","마자","클로버","오빠","붓싼","헐랭"],"habit":["헐랭","웅웅","헐"],"best":[[1,268],[4,258],[9,213]],"perday":18.9,"span":68,"night":0.002331002331002331,"morning":0.031857031857031856,"peak":17,"txt":1191,"k":218,"hex":[44,87,87,78,85,52]},{"id":"예에 ISTP 남 26","name":"예에","mbti":"ISTP","sex":"남","age":"26","n":1239,"days":54,"first":"2026-08-10","chars":9447,"avglen":8.1,"kchar":1168,"emo":38,"photo":22,"video":0,"dele":0,"q":70,"agree":26,"cry":0,"link":8,"hours":[84,22,32,3,0,1,0,9,3,36,118,35,29,26,34,36,43,68,221,54,93,139,54,99],"wd":[255,276,352,184,18,36,118],"opener":16,"ment_out":4,"ment_in":5,"words":["퇴근","타임","충주","데이","수업","굿모닝"],"habit":["캬","굿모닝","아","그"],"best":[[5,289],[0,278],[17,100]],"perday":18.2,"span":68,"night":0.11380145278450363,"morning":0.0387409200968523,"peak":18,"txt":1167,"k":129,"hex":[42,58,25,31,60,70]},{"id":"하트 ISFJ 여 36","name":"하트","mbti":"ISFJ","sex":"여","age":"36","n":995,"days":24,"first":"2026-08-25","chars":7948,"avglen":9.7,"kchar":1697,"emo":146,"photo":13,"video":0,"dele":0,"q":84,"agree":48,"cry":16,"link":1,"hours":[4,0,0,0,0,1,0,1,2,38,84,115,29,159,218,152,64,78,8,37,3,0,1,1],"wd":[162,115,252,428,24,5,9],"opener":2,"ment_out":0,"ment_in":15,"words":["안뇽","부산","댕댕이","퇴근","회식","주파수"],"habit":["오","헐","이야","와","다들 맛점행"],"best":[[1,277],[4,177],[6,171]],"perday":18.8,"span":53,"night":0.004020100502512563,"morning":0.04120603015075377,"peak":14,"txt":823,"k":119,"hex":[40,74,89,51,93,48]},{"id":"호부 ISTP 남 36","name":"호부","mbti":"ISTP","sex":"남","age":"36","n":862,"days":18,"first":"2026-08-20","chars":9716,"avglen":11.4,"kchar":117,"emo":0,"photo":8,"video":1,"dele":0,"q":39,"agree":24,"cry":11,"link":8,"hours":[0,0,0,0,0,0,0,0,54,113,83,88,91,0,58,146,6,80,139,2,2,0,0,0],"wd":[280,253,203,50,61,13,2],"opener":0,"ment_out":0,"ment_in":2,"words":["연차","튀르키예","평생","책임","휴가","결과"],"habit":["ㅇㅇ","ㄹㅇ","ㄴㄴ","ㅌㅋ"],"best":[[3,264],[4,213],[5,140]],"perday":14.9,"span":58,"night":0.0,"morning":0.1937354988399072,"peak":15,"txt":854,"k":52,"hex":[39,39,52,69,29,29]},{"id":"캐넌 ISFP 남 32","name":"캐넌","mbti":"ISFP","sex":"남","age":"32","n":847,"days":60,"first":"2026-08-10","chars":9025,"avglen":11.5,"kchar":500,"emo":51,"photo":0,"video":1,"dele":0,"q":44,"agree":67,"cry":92,"link":0,"hours":[2,0,0,0,0,0,1,50,55,40,12,18,30,57,12,27,14,9,143,42,50,109,107,69],"wd":[120,135,188,215,46,52,91],"opener":1,"ment_out":0,"ment_in":0,"words":["최고","부지런","선착순","비주얼","선물","월요일"],"habit":["앜ㅋㅋㅋ","ㅇㅈ","출근하자~"],"best":[[0,171],[5,95],[8,90]],"perday":12.5,"span":68,"night":0.0023612750885478157,"morning":0.17237308146399055,"peak":18,"txt":787,"k":159,"hex":[37,80,99,72,72,68]},{"id":"옥지 ESFP 남 32","name":"옥지","mbti":"ESFP","sex":"남","age":"32","n":845,"days":43,"first":"2026-08-10","chars":6096,"avglen":7.8,"kchar":225,"emo":45,"photo":10,"video":0,"dele":0,"q":37,"agree":43,"cry":9,"link":0,"hours":[55,0,0,0,0,0,0,1,0,76,49,89,23,23,90,72,74,29,49,43,87,58,26,1],"wd":[155,131,264,154,93,18,30],"opener":1,"ment_out":5,"ment_in":6,"words":["데스","하이","이즈","브로","우먼","축제"],"habit":["ㅇㅈ","ㅎㅇ","한잔해","하이데스네","맛있다"],"best":[[0,234],[1,127],[5,96]],"perday":12.4,"span":68,"night":0.0650887573964497,"morning":0.09112426035502959,"peak":14,"txt":786,"k":48,"hex":[35,35,78,25,80,44]},{"id":"곤곤 ISTJ 남 29","name":"곤곤","mbti":"ISTJ","sex":"남","age":"29","n":334,"days":5,"first":"2026-08-10","chars":2752,"avglen":8.3,"kchar":120,"emo":0,"photo":3,"video":0,"dele":0,"q":15,"agree":9,"cry":2,"link":0,"hours":[4,0,2,0,0,0,0,0,31,37,59,7,5,14,6,5,41,58,26,10,21,2,6,0],"wd":[54,224,40,10,6,0,0],"opener":0,"ment_out":3,"ment_in":3,"words":["퇴근","날씨","출근","친구"],"habit":["후후"],"best":[[3,69],[0,51],[11,38]],"perday":4.9,"span":68,"night":0.017964071856287425,"morning":0.20359281437125748,"peak":10,"txt":330,"k":49,"hex":[33,68,40,33,27,40]},{"id":"거미 ESTP 남 37","name":"거미","mbti":"ESTP","sex":"남","age":"37","n":298,"days":23,"first":"2026-08-11","chars":2818,"avglen":11.4,"kchar":401,"emo":40,"photo":10,"video":0,"dele":0,"q":20,"agree":6,"cry":3,"link":2,"hours":[5,0,0,0,0,0,0,0,0,2,2,74,15,23,42,57,9,0,9,24,1,30,5,0],"wd":[83,37,90,53,2,10,23],"opener":0,"ment_out":1,"ment_in":2,"words":["화장","샵검색"],"habit":[],"best":[[1,87],[2,52],[4,51]],"perday":4.4,"span":67,"night":0.016778523489932886,"morning":0.006711409395973154,"peak":11,"txt":248,"k":65,"hex":[31,95,44,69,95,39]},{"id":"땜쓰 INFP 남 40","name":"땜쓰","mbti":"INFP","sex":"남","age":"40","n":258,"days":24,"first":"2026-08-18","chars":3172,"avglen":12.4,"kchar":58,"emo":0,"photo":3,"video":0,"dele":0,"q":21,"agree":7,"cry":1,"link":1,"hours":[1,1,0,2,0,0,0,0,0,0,0,6,6,6,72,39,39,0,0,30,50,3,2,1],"wd":[3,73,87,84,1,7,3],"opener":0,"ment_out":1,"ment_in":1,"words":["정답","운동"],"habit":["맞아","아니"],"best":[[18,49],[1,48],[0,36]],"perday":4.3,"span":60,"night":0.015503875968992248,"morning":0.0,"peak":14,"txt":255,"k":7,"hex":[29,31,39,80,33,46]},{"id":"인사 ISFP 여 24","name":"인사","mbti":"ISFP","sex":"여","age":"24","n":149,"days":2,"first":"2026-10-13","chars":1339,"avglen":9.0,"kchar":97,"emo":0,"photo":1,"video":0,"dele":0,"q":19,"agree":8,"cry":0,"link":0,"hours":[2,92,2,0,0,0,0,0,0,4,15,0,0,0,0,0,0,0,0,0,1,0,0,33],"wd":[0,95,54,0,0,0,0],"opener":0,"ment_out":0,"ment_in":2,"words":[],"habit":["안녕","엉엉"],"best":[[0,46],[7,33],[19,30]],"perday":37.2,"span":4,"night":0.6442953020134228,"morning":0.026845637583892617,"peak":1,"txt":148,"k":22,"hex":[27,65,65,43,28,33]},{"id":"지금 ISTP 여 35","name":"지금","mbti":"ISTP","sex":"여","age":"35","n":40,"days":3,"first":"2026-10-11","chars":502,"avglen":12.9,"kchar":12,"emo":0,"photo":1,"video":0,"dele":0,"q":3,"agree":1,"cry":0,"link":0,"hours":[0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,3,1,0,0,0,3,23],"wd":[0,10,4,0,0,0,26],"opener":0,"ment_out":0,"ment_in":2,"words":[],"habit":[],"best":[[10,18],[2,12],[13,8]],"perday":6.7,"span":6,"night":0.0,"morning":0.0,"peak":23,"txt":39,"k":3,"hex":[25,52,45,56,49,45]},{"id":"우는 INTP 여 35","name":"우는","mbti":"INTP","sex":"여","age":"35","n":35,"days":1,"first":"2026-10-01","chars":556,"avglen":16.4,"kchar":71,"emo":0,"photo":1,"video":0,"dele":0,"q":6,"agree":3,"cry":0,"link":0,"hours":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,26,0,0,0,0],"wd":[0,0,0,35,0,0,0],"opener":0,"ment_out":0,"ment_in":5,"words":[],"habit":[],"best":[[14,30],[2,27],[0,9]],"perday":2.2,"span":16,"night":0.0,"morning":0.0,"peak":19,"txt":34,"k":8,"hex":[23,58,58,58,49,45]},{"id":"고식 ENTJ 남 27","name":"고식","mbti":"ENTJ","sex":"남","age":"27","n":33,"days":7,"first":"2026-08-11","chars":179,"avglen":6.2,"kchar":0,"emo":4,"photo":0,"video":0,"dele":0,"q":1,"agree":1,"cry":3,"link":0,"hours":[0,0,1,1,2,0,2,0,0,0,0,0,0,0,0,4,0,21,0,0,0,2,0,0],"wd":[0,1,11,2,3,0,16],"opener":0,"ment_out":0,"ment_in":2,"words":[],"habit":[],"best":[[18,8],[15,7],[0,7]],"perday":0.5,"span":67,"night":0.12121212121212122,"morning":0.06060606060606061,"peak":17,"txt":29,"k":0,"hex":[21,46,58,45,57,46]}],"axes":["화력","텐션","공감","진지","짤력","인싸력"],"daily":[["2026-08-10",2825],["2026-08-11",3990],["2026-08-12",3263],["2026-08-13",2220],["2026-08-14",892],["2026-08-16",484],["2026-08-17",1056],["2026-08-18",2087],["2026-08-19",1417],["2026-08-20",2276],["2026-08-21",3617],["2026-08-22",180],["2026-08-23",208],["2026-08-24",567],["2026-08-25",2806],["2026-08-26",3439],["2026-08-27",2877],["2026-08-28",1550],["2026-08-29",1006],["2026-08-30",1538],["2026-08-31",3495],["2026-09-01",2788],["2026-09-02",3072],["2026-09-03",3649],["2026-09-04",3044],["2026-09-05",940],["2026-09-06",375],["2026-09-07",2867],["2026-09-08",3174],["2026-09-09",6138],["2026-09-10",8596],["2026-09-11",900],["2026-09-12",416],["2026-09-13",1114],["2026-09-14",4894],["2026-09-15",6893],["2026-09-16",5669],["2026-09-17",4516],["2026-09-18",3762],["2026-09-20",706],["2026-09-21",4154],["2026-09-22",3783],["2026-09-27",3950],["2026-09-28",5413],["2026-09-29",3816],["2026-09-30",3148],["2026-10-01",5427],["2026-10-02",3844],["2026-10-04",1305],["2026-10-05",3649],["2026-10-06",6042],["2026-10-07",5543],["2026-10-08",4827],["2026-10-10",1262],["2026-10-11",2547],["2026-10-12",5624],["2026-10-13",5712],["2026-10-14",7615],["2026-10-15",8064],["2026-10-16",3001]],"hw":[[922,1071,1147,520,2,11,91,152,569,1951,2908,2142,1047,1491,3521,3714,2560,1858,1723,726,1431,1659,1920,1408],[1889,1376,151,6,20,20,117,223,522,2565,4361,1801,481,1264,3115,5326,5351,4348,1468,1386,1937,1747,1040,577],[531,63,12,12,11,2,99,107,1050,2548,2248,2203,694,2934,5086,4154,3284,4665,2851,985,1797,2049,1485,434],[1014,1060,157,9,11,27,85,332,1607,2652,4164,2612,1081,3489,3686,2585,1972,2522,2545,2224,3284,3366,1092,876],[1930,1160,124,256,7,27,146,139,338,2121,2943,2190,1176,1210,2885,1773,1252,447,486,0,0,0,0,0],[78,62,19,4,2,5,60,47,68,193,420,576,165,97,156,394,117,196,100,96,221,451,226,51],[408,443,1426,1059,369,15,72,100,51,230,201,154,231,372,151,378,556,1353,898,742,1971,454,133,460]],"C":{"0-1":[93,100,98,67,89,3546],"0-2":[83,99,48,77,36,2409],"0-3":[89,99,91,85,34,2756],"0-4":[84,97,84,52,39,1558],"0-5":[89,98,92,47,85,1505],"0-6":[91,96,86,67,95,1366],"0-7":[91,98,97,47,98,1476],"0-8":[85,96,93,75,6,1179],"0-9":[87,94,92,47,74,995],"0-10":[86,98,88,62,35,1206],"0-11":[86,93,76,70,55,806],"0-12":[94,95,94,82,94,912],"0-13":[84,94,98,37,52,811],"0-14":[74,72,54,82,5,325],"0-15":[84,88,94,85,12,598],"0-16":[89,92,93,90,36,643],"0-17":[79,95,53,47,39,736],"0-18":[75,88,52,55,9,496],"0-19":[86,95,77,47,82,672],"0-20":[81,88,65,92,2,455],"0-21":[73,72,71,45,26,226],"0-22":[76,83,51,67,21,335],"0-23":[77,82,82,60,1,304],"0-24":[81,84,71,77,29,327],"0-25":[84,90,88,90,2,378],"0-26":[88,94,58,100,60,465],"0-27":[69,67,78,37,1,145],"0-28":[67,73,36,52,2,174],"0-29":[80,85,79,37,55,278],"0-30":[72,74,57,60,4,156],"0-31":[70,65,61,37,38,106],"0-32":[70,78,46,45,9,171],"0-33":[81,86,96,55,20,234],"0-34":[73,58,84,52,38,51],"0-35":[58,42,40,47,1,27],"0-36":[70,51,38,75,56,36],"0-37":[65,66,15,45,33,46],"0-38":[49,9,10,37,55,0],"0-39":[62,42,10,67,49,9],"0-40":[64,37,12,92,56,7],"1-2":[91,100,73,77,87,3582],"1-3":[96,99,100,85,89,2451],"1-4":[90,100,99,52,69,2791],"1-5":[88,91,89,47,93,954],"1-6":[94,97,97,67,100,1459],"1-7":[89,95,98,47,85,1181],"1-8":[88,94,96,75,42,1060],"1-9":[90,98,97,47,91,1493],"1-10":[89,98,95,62,64,1298],"1-11":[87,86,77,70,88,595],"1-12":[94,93,98,82,94,769],"1-13":[84,87,95,37,72,596],"1-14":[88,97,82,82,49,977],"1-15":[87,77,91,85,74,386],"1-16":[90,87,94,90,69,514],"1-17":[76,79,45,47,67,362],"1-18":[77,77,52,55,68,317],"1-19":[84,90,58,47,95,504],"1-20":[87,94,91,92,16,588],"1-21":[76,78,44,45,78,288],"1-22":[71,60,42,67,45,139],"1-23":[80,95,57,60,24,569],"1-24":[82,87,58,77,46,356],"1-25":[83,83,81,90,20,297],"1-26":[81,75,36,100,69,199],"1-27":[67,60,61,37,19,115],"1-28":[77,84,59,52,33,268],"1-29":[70,57,47,37,84,93],"1-30":[84,88,90,60,46,277],"1-31":[70,60,65,37,45,91],"1-32":[66,58,27,45,57,81],"1-33":[81,70,94,55,69,127],"1-34":[64,27,74,52,57,9],"1-35":[72,75,57,47,19,87],"1-36":[74,59,55,75,56,48],"1-37":[57,31,10,45,59,9],"1-38":[51,9,7,37,82,0],"1-39":[64,42,3,67,84,9],"1-40":[61,9,22,92,88,0],"2-3":[88,92,60,75,99,1109],"2-4":[84,99,72,62,35,2127],"2-5":[80,97,51,37,61,1295],"2-6":[87,89,68,77,82,815],"2-7":[76,87,56,37,42,710],"2-8":[82,86,67,85,32,661],"2-9":[76,80,36,37,86,488],"2-10":[83,96,64,52,61,964],"2-11":[80,77,71,60,62,374],"2-12":[87,88,74,92,60,558],"2-13":[72,66,57,47,52,238],"2-14":[96,99,99,92,87,1576],"2-15":[82,78,55,75,82,365],"2-16":[83,79,52,100,56,343],"2-17":[78,86,50,37,72,425],"2-18":[69,55,43,45,74,130],"2-19":[67,50,41,37,80,105],"2-20":[86,93,100,82,11,508],"2-21":[63,39,17,55,76,59],"2-22":[72,58,31,77,68,121],"2-23":[77,81,40,70,54,260],"2-24":[64,41,8,67,79,54],"2-25":[87,89,61,100,59,324],"2-26":[71,54,18,90,68,86],"2-27":[58,25,56,47,25,13],"2-28":[71,60,41,62,54,101],"2-29":[68,48,33,47,95,64],"2-30":[77,51,87,70,77,64],"2-31":[69,66,36,47,50,99],"2-32":[66,57,26,55,48,71],"2-33":[69,40,64,45,89,36],"2-34":[66,45,22,62,72,28],"2-35":[71,62,53,37,66,52],"2-36":[71,39,72,85,44,19],"2-37":[57,23,12,55,68,3],"2-38":[66,49,12,47,92,12],"2-39":[76,74,11,77,90,27],"2-40":[60,9,18,82,98,0],"3-4":[92,99,100,70,71,1878],"3-5":[81,87,75,45,61,725],"3-6":[95,97,100,85,83,1252],"3-7":[78,79,91,45,29,512],"3-8":[91,96,95,77,67,1095],"3-9":[90,97,97,45,89,1080],"3-10":[86,90,87,60,67,652],"3-11":[82,84,68,52,81,494],"3-12":[92,92,98,100,58,636],"3-13":[87,96,94,55,59,840],"3-14":[79,48,64,100,97,123],"3-15":[88,87,85,67,95,487],"3-16":[90,86,93,92,73,436],"3-17":[54,9,30,45,74,0],"3-18":[76,75,47,37,90,257],"3-19":[72,61,39,45,85,154],"3-20":[87,91,86,90,40,426],"3-21":[67,49,32,47,80,89],"3-22":[81,88,27,85,68,342],"3-23":[59,9,42,62,82,0],"3-24":[85,96,57,75,51,507],"3-25":[79,66,59,92,62,129],"3-26":[58,9,22,82,70,0],"3-27":[68,48,45,55,63,64],"3-28":[84,80,67,70,86,199],"3-29":[66,42,39,55,76,47],"3-30":[85,76,90,62,94,151],"3-31":[85,92,83,55,58,264],"3-32":[67,50,28,47,85,55],"3-33":[78,65,87,37,84,90],"3-34":[80,69,81,70,61,69],"3-35":[62,25,52,45,75,6],"3-36":[65,32,50,77,52,11],"3-37":[51,9,3,47,73,0],"3-38":[54,9,6,55,91,0],"3-39":[58,9,5,85,96,0],"3-40":[67,28,22,90,97,3],"4-5":[68,42,50,92,32,123],"4-6":[85,89,92,52,65,701],"4-7":[85,91,80,92,22,710],"4-8":[89,96,87,60,75,893],"4-9":[95,98,93,92,79,1184],"4-10":[86,91,84,77,49,601],"4-11":[90,97,60,85,87,844],"4-12":[81,90,89,37,38,515],"4-13":[68,33,73,82,42,50],"4-14":[84,100,84,37,51,1538],"4-15":[78,68,74,70,53,214],"4-16":[75,57,78,45,83,127],"4-17":[64,37,25,92,35,53],"4-18":[82,85,44,100,46,345],"4-19":[76,63,32,92,70,143],"4-20":[88,92,95,47,90,414],"4-21":[78,77,29,90,55,215],"4-22":[56,29,22,52,40,22],"4-23":[66,44,38,75,39,58],"4-24":[74,86,48,62,5,270],"4-25":[75,83,70,45,18,231],"4-26":[59,25,20,55,70,12],"4-27":[68,40,40,82,64,40],"4-28":[81,90,43,67,65,258],"4-29":[58,24,28,82,26,9],"4-30":[84,82,94,75,33,177],"4-31":[84,90,58,82,53,213],"4-32":[72,54,20,90,80,56],"4-33":[71,38,88,100,11,28],"4-34":[66,43,48,67,37,23],"4-35":[77,67,69,92,26,51],"4-36":[73,56,74,60,54,32],"4-37":[56,9,6,90,60,0],"4-38":[55,9,4,82,66,0],"4-39":[52,9,2,52,78,0],"4-40":[56,30,9,47,55,3],"5-6":[86,89,82,47,89,635],"5-7":[90,95,96,67,71,816],"5-8":[78,85,89,55,5,504],"5-9":[79,75,66,67,54,310],"5-10":[79,76,80,82,11,305],"5-11":[83,79,80,90,41,330],"5-12":[85,85,92,62,66,392],"5-13":[82,81,97,77,18,332],"5-14":[61,34,50,62,21,49],"5-15":[78,78,90,45,33,280],"5-16":[81,82,94,70,15,298],"5-17":[88,95,73,67,79,528],"5-18":[71,58,57,75,28,116],"5-19":[91,94,87,67,96,459],"5-20":[68,67,54,52,4,140],"5-21":[80,82,49,85,41,239],"5-22":[66,56,63,47,6,84],"5-23":[84,94,61,100,10,370],"5-24":[65,61,37,37,31,99],"5-25":[67,53,61,70,1,72],"5-26":[81,93,60,60,44,311],"5-27":[75,65,85,77,2,97],"5-28":[76,68,69,92,10,102],"5-29":[86,94,78,77,46,289],"5-30":[76,68,49,100,27,89],"5-31":[78,81,55,77,28,140],"5-32":[74,71,41,85,30,95],"5-33":[82,71,78,75,69,96],"5-34":[74,44,87,92,39,22],"5-35":[54,24,26,67,2,4],"5-36":[54,20,29,55,22,2],"5-37":[62,36,6,85,53,10],"5-38":[60,30,17,77,49,3],"5-39":[50,9,7,47,58,0],"5-40":[57,9,45,52,74,0],"6-7":[86,88,85,47,92,581],"6-8":[84,82,95,75,36,438],"6-9":[88,93,90,47,94,688],"6-10":[81,76,75,62,72,308],"6-11":[83,72,81,70,86,245],"6-12":[92,86,97,82,99,405],"6-13":[86,92,96,37,78,525],"6-14":[77,69,63,82,37,210],"6-15":[76,47,82,85,60,91],"6-16":[87,79,89,90,72,260],"6-17":[73,73,37,47,60,200],"6-18":[71,64,42,55,54,141],"6-19":[82,90,44,47,93,359],"6-20":[81,78,83,92,11,217],"6-21":[70,63,32,45,70,117],"6-22":[70,61,28,67,53,102],"6-23":[72,77,45,60,15,177],"6-24":[68,48,33,77,50,61],"6-25":[77,71,65,90,17,132],"6-26":[82,84,24,100,71,206],"6-27":[59,40,50,37,12,36],"6-28":[79,83,87,52,23,188],"6-29":[68,52,43,37,84,57],"6-30":[82,84,95,60,31,171],"6-31":[60,24,66,37,50,7],"6-32":[59,39,28,45,40,27],"6-33":[76,58,88,55,59,59],"6-34":[61,19,71,52,55,1],"6-35":[59,32,58,47,14,10],"6-36":[71,47,51,75,65,21],"6-37":[56,35,2,45,53,9],"6-38":[60,39,11,37,82,6],"6-39":[55,9,7,67,81,0],"6-40":[67,31,28,92,86,3],"7-8":[78,81,96,55,5,386],"7-9":[87,89,86,67,74,522],"7-10":[83,80,85,82,38,337],"7-11":[87,88,82,90,45,428],"7-12":[88,85,96,62,90,374],"7-13":[83,72,96,77,50,221],"7-14":[73,74,69,62,4,228],"7-15":[72,64,94,45,12,155],"7-16":[80,69,95,70,35,174],"7-17":[81,99,55,67,25,773],"7-18":[67,54,51,75,7,96],"7-19":[85,89,77,67,64,321],"7-20":[59,30,70,52,1,24],"7-21":[77,73,59,85,31,157],"7-22":[64,43,60,47,26,48],"7-23":[84,98,62,100,0,440],"7-24":[69,69,50,37,36,118],"7-25":[71,56,83,70,3,70],"7-26":[74,65,64,60,46,90],"7-27":[75,70,81,77,0,109],"7-28":[71,61,52,92,1,75],"7-29":[81,68,69,77,77,95],"7-30":[68,41,62,100,2,31],"7-31":[63,26,68,77,24,8],"7-32":[65,45,43,85,4,34],"7-33":[78,70,89,75,16,85],"7-34":[75,51,76,92,41,27],"7-35":[55,19,43,67,1,1],"7-36":[64,47,38,55,40,20],"7-37":[69,68,10,85,24,33],"7-38":[57,22,9,77,52,1],"7-39":[48,9,5,47,39,0],"7-40":[52,9,26,52,48,0],"8-9":[80,82,76,55,52,373],"8-10":[82,76,79,70,63,285],"8-11":[91,91,97,62,94,469],"8-12":[84,78,99,90,24,263],"8-13":[81,81,99,45,48,299],"8-14":[84,80,79,90,47,283],"8-15":[91,90,99,77,81,407],"8-16":[89,79,99,82,83,233],"8-17":[63,52,46,55,3,86],"8-18":[83,81,85,47,85,236],"8-19":[74,72,73,55,19,163],"8-20":[85,76,77,100,62,174],"8-21":[71,62,57,37,67,105],"8-22":[78,80,54,75,38,181],"8-23":[75,74,69,52,36,141],"8-24":[67,60,30,85,1,84],"8-25":[84,69,92,82,65,112],"8-26":[74,69,46,92,13,102],"8-27":[82,74,85,45,93,120],"8-28":[78,66,67,60,80,85],"8-29":[64,45,69,45,18,38],"8-30":[75,68,71,52,44,81],"8-31":[64,48,70,45,6,37],"8-32":[75,73,52,37,79,90],"8-33":[69,51,98,47,5,41],"8-34":[66,50,66,60,4,25],"8-35":[64,28,68,55,57,6],"8-36":[67,48,62,67,14,20],"8-37":[44,9,4,37,7,0],"8-38":[47,9,9,45,29,0],"8-39":[53,9,19,75,38,0],"8-40":[60,23,28,100,24,1],"9-10":[89,85,83,82,91,383],"9-11":[85,89,36,90,84,409],"9-12":[87,85,88,62,84,341],"9-13":[85,77,75,77,87,239],"9-14":[75,70,42,62,69,188],"9-15":[76,78,62,45,56,237],"9-16":[77,53,70,70,95,90],"9-17":[62,35,23,67,61,38],"9-18":[74,75,27,75,44,181],"9-19":[67,41,31,67,85,46],"9-20":[70,66,53,52,30,115],"9-21":[74,62,37,85,62,98],"9-22":[63,38,19,47,93,34],"9-23":[70,51,33,100,28,61],"9-24":[80,82,82,37,65,175],"9-25":[73,63,47,70,47,84],"9-26":[65,36,24,60,95,26],"9-27":[63,43,30,77,25,36],"9-28":[82,91,44,92,39,213],"9-29":[70,44,30,77,87,36],"9-30":[76,53,75,100,37,47],"9-31":[85,76,78,77,84,94],"9-32":[60,27,17,85,43,9],"9-33":[78,66,80,75,44,64],"9-34":[82,63,71,92,79,38],"9-35":[72,65,46,67,42,37],"9-36":[74,64,32,55,93,34],"9-37":[60,23,5,85,76,2],"9-38":[57,9,2,77,99,0],"9-39":[53,9,2,47,98,0],"9-40":[55,9,16,52,95,0],"10-11":[75,57,51,75,78,112],"10-12":[82,77,88,47,79,233],"10-13":[89,78,79,92,100,232],"10-14":[70,58,66,47,35,117],"10-15":[79,77,86,60,33,216],"10-16":[80,65,80,55,97,123],"10-17":[81,91,66,82,10,320],"10-18":[73,64,34,90,37,115],"10-19":[68,44,50,82,34,51],"10-20":[75,83,78,37,13,219],"10-21":[71,54,37,100,28,69],"10-22":[66,32,38,62,98,20],"10-23":[61,33,39,85,11,23],"10-24":[64,47,42,52,30,47],"10-25":[69,48,53,55,62,46],"10-26":[61,36,36,45,49,25],"10-27":[73,61,54,92,21,69],"10-28":[66,43,49,77,27,33],"10-29":[72,47,48,92,60,38],"10-30":[73,58,68,85,18,50],"10-31":[73,40,75,92,49,23],"10-32":[66,46,25,100,22,30],"10-33":[70,46,72,90,16,30],"10-34":[64,32,62,77,23,8],"10-35":[64,30,49,82,36,7],"10-36":[63,28,27,70,81,5],"10-37":[55,9,18,100,20,0],"10-38":[77,74,9,92,76,18],"10-39":[53,9,3,62,69,0],"10-40":[51,9,24,37,62,0],"11-12":[81,75,81,55,75,199],"11-13":[90,80,93,100,77,241],"11-14":[83,92,79,55,43,382],"11-15":[88,92,93,52,81,376],"11-16":[87,87,92,47,92,270],"11-17":[72,55,64,90,18,78],"11-18":[93,97,89,82,82,435],"11-19":[83,66,86,90,61,109],"11-20":[69,52,74,45,42,63],"11-21":[77,57,44,92,83,71],"11-22":[77,62,75,70,55,81],"11-23":[65,29,74,77,25,15],"11-24":[58,43,14,60,8,37],"11-25":[74,59,92,47,43,66],"11-26":[61,40,46,37,38,28],"11-27":[93,95,95,100,62,246],"11-28":[84,85,63,85,59,147],"11-29":[83,70,76,100,55,81],"11-30":[75,70,48,77,40,74],"11-31":[61,22,36,100,23,4],"11-32":[78,57,59,92,75,42],"11-33":[76,59,88,82,20,46],"11-34":[73,67,47,85,22,38],"11-35":[74,62,47,90,31,31],"11-36":[72,61,60,62,37,28],"11-37":[70,69,8,92,25,27],"11-38":[58,9,13,100,61,0],"11-39":[55,9,18,70,66,0],"11-40":[57,24,29,45,56,1],"12-13":[90,93,97,52,92,398],"12-14":[75,71,78,67,15,160],"12-15":[85,80,90,100,27,218],"12-16":[88,82,99,75,68,225],"12-17":[70,69,40,62,26,124],"12-18":[73,65,59,70,29,104],"12-19":[71,50,48,62,73,60],"12-20":[77,74,83,77,3,128],"12-21":[72,71,44,60,30,112],"12-22":[67,38,37,82,56,30],"12-23":[65,56,59,45,3,58],"12-24":[74,62,42,92,39,72],"12-25":[73,61,80,75,9,66],"12-26":[79,84,37,85,47,147],"12-27":[67,59,65,52,3,57],"12-28":[64,53,63,37,7,43],"12-29":[77,71,68,52,66,81],"12-30":[72,67,88,45,10,62],"12-31":[72,52,90,52,38,35],"12-32":[64,49,41,60,16,31],"12-33":[78,67,91,70,31,58],"12-34":[64,42,75,37,25,14],"12-35":[66,52,59,62,4,20],"12-36":[70,36,51,90,69,9],"12-37":[51,20,3,60,21,1],"12-38":[59,34,8,52,66,3],"12-39":[65,39,17,82,58,4],"12-40":[57,9,26,77,67,0],"13-14":[64,45,56,52,22,61],"13-15":[86,98,99,55,28,579],"13-16":[91,93,98,60,90,334],"13-17":[62,31,55,77,9,22],"13-18":[87,99,70,85,33,591],"13-19":[76,61,81,77,38,88],"13-20":[70,62,67,62,7,85],"13-21":[75,71,63,75,22,111],"13-22":[77,75,59,37,88,119],"13-23":[73,54,84,90,5,55],"13-24":[60,38,40,47,28,27],"13-25":[74,60,83,60,33,63],"13-26":[76,76,50,70,40,103],"13-27":[84,98,85,67,12,310],"13-28":[72,55,67,82,17,46],"13-29":[75,57,80,67,51,48],"13-30":[76,68,67,90,12,65],"13-31":[70,46,67,67,41,27],"13-32":[72,60,62,75,19,45],"13-33":[73,47,92,85,17,28],"13-34":[74,54,89,82,15,23],"13-35":[63,37,45,77,17,10],"13-36":[63,34,35,45,78,8],"13-37":[60,46,5,75,14,11],"13-38":[68,55,17,67,68,8],"13-39":[50,9,14,37,58,0],"13-40":[66,49,28,62,57,6],"14-15":[85,73,63,100,83,162],"14-16":[74,59,65,75,45,90],"14-17":[67,43,41,62,63,46],"14-18":[82,81,57,70,75,185],"14-19":[60,20,42,62,60,4],"14-20":[84,76,98,77,49,140],"14-21":[69,59,25,60,59,73],"14-22":[61,18,36,82,54,1],"14-23":[64,29,47,45,97,14],"14-24":[54,9,12,92,32,0],"14-25":[86,87,78,75,63,167],"14-26":[64,32,25,85,57,15],"14-27":[64,24,65,52,70,7],"14-28":[64,37,35,37,93,21],"14-29":[58,23,39,52,45,5],"14-30":[66,20,81,45,96,2],"14-31":[57,20,40,52,48,2],"14-32":[64,36,30,60,79,16],"14-33":[67,21,76,70,70,3],"14-34":[50,9,21,37,54,0],"14-35":[77,56,69,62,91,22],"14-36":[68,29,84,90,30,5],"14-37":[53,9,7,60,73,0],"14-38":[53,9,6,52,81,0],"14-39":[82,92,8,82,90,30],"14-40":[58,9,15,77,85,0],"15-16":[87,79,98,92,49,177],"15-17":[53,9,58,45,27,0],"15-18":[83,83,76,37,100,202],"15-19":[64,28,79,45,48,16],"15-20":[72,49,63,90,31,52],"15-21":[85,88,77,47,96,202],"15-22":[69,44,60,85,28,37],"15-23":[62,9,73,62,72,0],"15-24":[59,33,29,75,9,17],"15-25":[76,39,91,92,64,26],"15-26":[57,9,55,82,20,0],"15-27":[88,93,93,55,78,195],"15-28":[76,56,55,70,87,45],"15-29":[74,63,70,55,53,58],"15-30":[73,49,54,62,92,32],"15-31":[58,26,60,55,9,6],"15-32":[71,45,65,47,88,25],"15-33":[64,27,91,37,50,7],"15-34":[64,32,72,70,20,7],"15-35":[60,19,52,45,74,1],"15-36":[61,35,39,77,8,8],"15-37":[47,9,8,47,27,0],"15-38":[51,9,13,55,47,0],"15-39":[56,9,12,85,63,0],"15-40":[72,55,27,90,62,7],"16-17":[64,45,48,70,14,45],"16-18":[83,89,82,62,46,224],"16-19":[71,52,63,70,41,54],"16-20":[78,68,66,85,42,88],"16-21":[72,64,56,52,51,73],"16-22":[70,25,56,90,92,8],"16-23":[64,50,62,37,19,41],"16-24":[68,46,39,100,16,34],"16-25":[82,73,90,67,67,84],"16-26":[77,70,47,77,63,73],"16-27":[82,86,77,60,44,134],"16-28":[68,50,66,45,44,34],"16-29":[75,60,72,60,58,47],"16-30":[64,51,58,37,23,31],"16-31":[65,29,73,60,50,8],"16-32":[66,50,49,52,41,27],"16-33":[63,30,84,62,10,9],"16-34":[66,40,86,45,32,11],"16-35":[61,22,44,70,47,2],"16-36":[67,30,45,82,75,5],"16-37":[54,31,7,52,30,4],"16-38":[59,24,11,60,77,1],"16-39":[58,9,15,90,76,0],"16-40":[58,9,33,85,59,0],"17-18":[58,26,32,75,19,11],"17-19":[88,83,87,67,97,164],"17-20":[72,79,45,52,15,129],"17-21":[66,52,23,85,24,46],"17-22":[71,64,76,47,17,66],"17-23":[80,84,35,100,42,139],"17-24":[50,9,11,37,63,0],"17-25":[61,41,41,70,2,24],"17-26":[80,81,43,60,82,107],"17-27":[61,21,77,77,4,3],"17-28":[64,35,39,92,24,16],"17-29":[81,82,66,77,41,100],"17-30":[57,9,21,100,45,0],"17-31":[58,9,25,77,75,0],"17-32":[63,34,29,85,34,12],"17-33":[64,22,43,75,82,3],"17-34":[62,9,38,92,80,0],"17-35":[49,9,14,67,10,0],"17-36":[57,31,19,55,42,5],"17-37":[80,72,31,85,97,24],"17-38":[57,9,14,77,80,0],"17-39":[53,9,5,47,86,0],"17-40":[57,9,30,52,92,0],"18-19":[78,71,68,75,40,101],"18-20":[64,47,41,60,30,40],"18-21":[78,72,34,77,81,92],"18-22":[68,52,65,55,25,42],"18-23":[68,19,68,92,73,2],"18-24":[49,18,16,45,6,1],"18-25":[77,67,72,62,54,65],"18-26":[56,33,27,52,13,13],"18-27":[86,78,72,85,83,91],"18-28":[68,28,31,100,89,9],"18-29":[70,49,57,85,31,30],"18-30":[71,41,25,92,92,18],"18-31":[57,22,34,85,7,3],"18-32":[74,49,49,77,92,25],"18-33":[75,62,72,67,48,40],"18-34":[57,9,43,100,8,0],"18-35":[70,53,29,75,63,17],"18-36":[73,84,53,47,8,49],"18-37":[49,9,1,77,15,0],"18-38":[53,9,4,85,36,0],"18-39":[52,9,19,55,51,0],"18-40":[69,63,22,60,51,8],"19-20":[69,68,40,52,26,78],"19-21":[73,59,46,85,48,56],"19-22":[70,51,91,47,32,39],"19-23":[88,96,70,100,37,221],"19-24":[57,31,21,37,58,12],"19-25":[65,42,64,70,6,24],"19-26":[87,91,75,60,86,139],"19-27":[68,33,96,77,13,13],"19-28":[64,36,34,92,32,15],"19-29":[76,51,82,77,64,30],"19-30":[71,53,21,100,50,29],"19-31":[61,19,25,77,76,1],"19-32":[70,43,48,85,57,18],"19-33":[72,37,76,75,78,13],"19-34":[66,20,49,92,75,1],"19-35":[60,42,22,67,13,10],"19-36":[59,27,26,55,66,3],"19-37":[79,80,14,85,89,30],"19-38":[67,38,19,77,88,3],"19-39":[54,9,12,47,94,0],"19-40":[57,9,24,52,96,0],"20-21":[58,35,19,70,21,18],"20-22":[73,73,30,92,14,80],"20-23":[66,45,38,55,62,28],"20-24":[55,25,21,82,0,6],"20-25":[76,72,64,85,10,70],"20-26":[69,67,22,75,29,54],"20-27":[63,19,54,62,80,1],"20-28":[70,55,46,47,77,33],"20-29":[57,34,35,62,2,12],"20-30":[70,46,93,55,32,21],"20-31":[61,37,42,62,23,13],"20-32":[66,38,24,70,81,13],"20-33":[62,33,72,60,3,9],"20-34":[48,9,29,47,11,0],"20-35":[61,32,62,52,27,5],"20-36":[69,37,71,100,15,7],"20-37":[69,72,12,70,32,21],"20-38":[60,45,11,62,28,4],"20-39":[62,34,6,92,47,2],"20-40":[50,9,16,67,20,0],"21-22":[50,9,32,45,23,0],"21-23":[69,38,77,82,29,20],"21-24":[49,9,27,55,8,0],"21-25":[78,75,73,52,52,74],"21-26":[67,44,69,62,27,22],"21-27":[75,62,67,75,44,44],"21-28":[69,54,14,90,55,31],"21-29":[82,83,52,75,74,89],"21-30":[60,21,21,82,59,2],"21-31":[65,53,34,75,7,25],"21-32":[78,65,74,67,65,36],"21-33":[67,44,56,77,28,17],"21-34":[61,24,34,90,34,2],"21-35":[70,54,31,85,48,15],"21-36":[45,9,16,37,8,0],"21-37":[50,9,5,67,29,0],"21-38":[58,26,15,75,45,1],"21-39":[50,9,10,45,56,0],"21-40":[52,9,3,70,51,0],"22-23":[61,30,60,60,16,10],"22-24":[62,36,13,77,52,16],"22-25":[70,33,55,90,72,11],"22-26":[80,63,56,100,71,42],"22-27":[67,50,85,37,17,26],"22-28":[54,22,28,52,27,3],"22-29":[67,41,73,37,68,17],"22-30":[52,21,14,60,19,2],"22-31":[56,23,21,37,72,3],"22-32":[65,55,51,45,16,24],"22-33":[55,19,42,55,18,1],"22-34":[56,20,35,52,43,1],"22-35":[57,28,17,47,58,3],"22-36":[61,21,18,75,87,1],"22-37":[57,32,34,45,34,3],"22-38":[53,9,18,37,88,0],"22-39":[55,9,7,67,79,0],"22-40":[67,35,26,92,73,2],"23-24":[50,9,23,70,6,0],"23-25":[63,34,83,37,25,13],"23-26":[71,73,53,47,24,59],"23-27":[71,22,84,90,77,3],"23-28":[68,41,18,75,97,16],"23-29":[75,57,88,90,9,30],"23-30":[60,9,30,67,98,0],"23-31":[56,9,35,90,23,0],"23-32":[68,9,86,82,88,0],"23-33":[64,9,78,92,52,0],"23-34":[53,9,35,75,16,0],"23-35":[65,21,38,100,71,1],"23-36":[53,25,26,52,10,2],"23-37":[53,9,8,82,43,0],"23-38":[55,9,16,90,42,0],"23-39":[53,9,13,60,65,0],"23-40":[50,9,3,55,57,0],"24-25":[59,25,24,100,8,5],"24-26":[59,9,23,90,68,0],"24-27":[46,9,15,47,0,0],"24-28":[53,29,11,62,3,7],"24-29":[60,31,22,47,76,8],"24-30":[56,27,24,70,14,5],"24-31":[68,56,33,47,66,23],"24-32":[46,9,9,55,2,0],"24-33":[59,26,32,45,72,4],"24-34":[62,9,74,62,71,0],"24-35":[48,21,6,37,11,1],"24-36":[61,28,12,85,60,3],"24-37":[51,9,6,55,57,0],"24-38":[52,9,1,47,83,0],"24-39":[54,9,0,77,71,0],"24-40":[57,9,2,82,87,0],"25-26":[66,46,53,77,14,20],"25-27":[65,26,83,60,45,5],"25-28":[60,40,28,45,48,14],"25-29":[70,52,64,60,46,24],"25-30":[62,43,52,37,35,15],"25-31":[58,35,35,60,6,9],"25-32":[63,44,53,52,22,14],"25-33":[61,22,90,62,8,2],"25-34":[49,9,37,45,13,0],"25-35":[73,40,61,70,96,7],"25-36":[66,41,61,82,11,7],"25-37":[54,33,15,52,7,3],"25-38":[55,28,8,60,40,1],"25-39":[56,9,24,90,37,0],"25-40":[52,9,8,85,29,0],"26-27":[58,9,82,70,7,0],"26-28":[53,23,16,55,21,3],"26-29":[81,70,80,70,67,42],"26-30":[48,9,16,47,21,0],"26-31":[59,9,19,70,99,0],"26-32":[74,74,54,62,25,40],"26-33":[58,29,38,52,35,5],"26-34":[58,9,29,55,96,0],"26-35":[50,9,20,60,22,0],"26-36":[67,36,9,92,93,5],"26-37":[66,42,13,62,98,5],"26-38":[60,9,32,70,99,0],"26-39":[61,9,11,100,98,0],"26-40":[57,9,10,75,91,0],"27-28":[68,31,32,82,99,7],"27-29":[74,64,92,67,5,33],"27-30":[68,37,31,90,74,10],"27-31":[51,9,33,67,5,0],"27-32":[75,38,81,75,93,10],"27-33":[73,55,79,85,6,20],"27-34":[66,53,37,82,3,12],"27-35":[58,9,33,77,70,0],"27-36":[52,21,38,45,4,1],"27-37":[50,9,15,75,9,0],"27-38":[51,9,26,67,19,0],"27-39":[47,9,9,37,32,0],"27-40":[55,29,18,62,18,1],"28-29":[58,30,23,82,14,6],"28-30":[78,59,56,75,95,24],"28-31":[66,48,39,82,17,15],"28-32":[63,20,13,90,98,1],"28-33":[70,48,40,100,31,15],"28-34":[70,63,54,67,12,16],"28-35":[66,26,31,92,80,2],"28-36":[49,9,23,60,12,0],"28-37":[52,9,1,90,30,0],"28-38":[53,9,8,82,41,0],"28-39":[51,9,1,52,64,0],"28-40":[60,9,89,47,47,0],"29-30":[57,19,21,90,26,1],"29-31":[63,34,45,67,36,7],"29-32":[70,46,86,75,14,13],"29-33":[72,47,62,85,46,14],"29-34":[75,56,47,82,78,12],"29-35":[59,26,23,77,34,2],"29-36":[55,27,19,45,43,2],"29-37":[62,39,11,75,52,4],"29-38":[57,9,20,67,86,0],"29-39":[52,9,20,37,76,0],"29-40":[71,64,13,62,83,5],"30-31":[65,38,48,90,17,8],"30-32":[63,23,16,82,90,2],"30-33":[72,32,68,92,77,5],"30-34":[53,9,31,75,18,0],"30-35":[71,22,79,100,73,1],"30-36":[57,23,61,52,8,1],"30-37":[52,9,2,82,37,0],"30-38":[55,9,10,90,47,0],"30-39":[52,9,4,60,67,0],"30-40":[54,9,17,55,70,0],"31-32":[58,27,33,75,18,3],"31-33":[59,9,58,85,33,0],"31-34":[62,9,51,82,77,0],"31-35":[55,9,46,77,15,0],"31-36":[55,9,20,45,98,0],"31-37":[56,9,2,75,88,0],"31-38":[56,9,2,67,95,0],"31-39":[52,9,7,37,94,0],"31-40":[56,9,20,62,86,0],"32-33":[60,24,41,77,35,2],"32-34":[61,35,27,90,13,4],"32-35":[70,58,23,85,43,10],"32-36":[51,28,15,37,12,2],"32-37":[55,25,4,67,34,1],"32-38":[54,9,25,75,39,0],"32-39":[52,9,20,45,64,0],"32-40":[52,9,4,70,50,0],"33-34":[68,39,49,100,34,5],"33-35":[58,9,71,75,20,0],"33-36":[55,9,70,47,21,0],"33-37":[53,9,2,77,51,0],"33-38":[55,9,3,85,65,0],"33-39":[53,9,13,55,71,0],"33-40":[55,9,9,60,89,0],"34-35":[53,9,10,92,22,0],"34-36":[53,9,18,60,61,0],"34-37":[59,9,4,90,97,0],"34-38":[58,9,6,82,91,0],"34-39":[54,9,7,52,88,0],"34-40":[56,9,34,47,84,0],"35-36":[57,27,44,55,12,1],"35-37":[51,9,1,85,23,0],"35-38":[53,9,4,77,53,0],"35-39":[65,57,12,47,57,2],"35-40":[49,9,5,52,43,0],"36-37":[49,9,1,37,64,0],"36-38":[52,9,1,45,91,0],"36-39":[57,9,14,75,85,0],"36-40":[58,9,3,100,77,0],"37-38":[58,9,17,75,91,0],"37-39":[53,9,0,45,96,0],"37-40":[55,9,0,70,90,0],"38-39":[52,9,1,37,100,0],"38-40":[56,9,5,62,99,0],"39-40":[59,9,0,92,99,0]},"words":[["언니",1925],["친구",917],["부산",684],["여자",659],["오빠",641],["퇴근",625],["가능",623],["남자",598],["누나",597],["엄마",556],["요즘",496],["느낌",495],["회사",492],["얘기",490],["머리",416],["서울",405],["운동",381],["이름",374],["저녁",358],["출근",354],["얼굴",338],["아침",334],["소리",331],["이번",326]],"dailyTop":{"2026-08-10":[21,340],"2026-08-11":[3,627],"2026-08-12":[3,529],"2026-08-13":[8,259],"2026-08-14":[3,112],"2026-08-16":[22,107],"2026-08-17":[0,176],"2026-08-18":[3,240],"2026-08-19":[15,264],"2026-08-20":[3,429],"2026-08-21":[3,723],"2026-08-22":[8,31],"2026-08-23":[15,45],"2026-08-24":[11,68],"2026-08-25":[11,374],"2026-08-26":[1,618],"2026-08-27":[4,410],"2026-08-28":[3,238],"2026-08-29":[9,141],"2026-08-30":[0,307],"2026-08-31":[3,853],"2026-09-01":[10,284],"2026-09-02":[3,649],"2026-09-03":[3,839],"2026-09-04":[3,592],"2026-09-05":[3,259],"2026-09-06":[8,60],"2026-09-07":[24,338],"2026-09-08":[3,685],"2026-09-09":[1,752],"2026-09-10":[0,1332],"2026-09-11":[1,167],"2026-09-12":[8,51],"2026-09-13":[2,168],"2026-09-14":[3,984],"2026-09-15":[3,1155],"2026-09-16":[0,797],"2026-09-17":[3,351],"2026-09-18":[1,670],"2026-09-20":[15,113],"2026-09-21":[4,635],"2026-09-22":[4,484],"2026-09-27":[1,801],"2026-09-28":[4,724],"2026-09-29":[14,565],"2026-09-30":[2,733],"2026-10-01":[1,833],"2026-10-02":[1,774],"2026-10-04":[0,179],"2026-10-05":[2,1313],"2026-10-06":[1,1161],"2026-10-07":[1,689],"2026-10-08":[1,783],"2026-10-10":[0,231],"2026-10-11":[17,591],"2026-10-12":[0,1001],"2026-10-13":[17,882],"2026-10-14":[5,1118],"2026-10-15":[1,1060],"2026-10-16":[5,603]}};</script>
+<script>
+(function(){
+const U=D.users, N=U.length, AX=D.axes;
+const $=s=>document.querySelector(s);
+const fmt=n=>Number(n).toLocaleString('ko-KR');
+const temp=m=>{if(!/^[EI][NS][TF][JP]$/.test(m))return'NT';return m[1]==='N'?(m[2]==='T'?'NT':'NF'):(m[3]==='J'?'SJ':'SP')};
+U.forEach((u,i)=>{u.i=i;u.t=temp(u.mbti);u.rank=i+1;u.hexsum=u.hex.reduce((a,b)=>a+b,0)});
+const cssv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const col=t=>`var(--${t.toLowerCase()})`;
+const who=u=>`<span class="who"><b>${u.name}</b><span class="tag t-${u.t}">${u.mbti}</span></span>`;
+const C=(a,b)=>{if(a===b)return null;const k=a<b?a+'-'+b:b+'-'+a;return D.C[k]};
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('.tab')];
+let netDone=false;
+function show(p){
+  tabs.forEach(t=>t.setAttribute('aria-selected',t.dataset.p===p));
+  ['rank','cards','chem'].forEach(k=>$('#p-'+k).hidden=k!==p);
+  if(p==='chem'&&!netDone){netDone=true;drawNet()}
+  try{localStorage.setItem('mbtiTab',p)}catch(e){}
+  window.scrollTo({top:0});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>{show(t.dataset.p);try{history.replaceState(null,'','#'+t.dataset.p)}catch(e){}}));
+
+/* ---------- page 1 ---------- */
+const total=U.reduce((a,u)=>a+u.n,0);
+const days=D.daily.length;
+const peak=D.daily.reduce((a,b)=>b[1]>a[1]?b:a);
+const d0=D.daily[0][0],d1=D.daily[days-1][0];
+$('#period').textContent=`${d0.replace(/-/g,'.')} ~ ${d1.replace(/-/g,'.')} · ${days}일 · 메시지 30건 이상 멤버 ${N}명 기준`;
+const pk=new Date(peak[0]);
+$('#kpis').innerHTML=[
+ ['총 메시지',fmt(total),'건'],['집계 멤버',N,'명 (30건↑)'],['하루 평균',fmt(Math.round(total/days)),'건/일'],
+ ['최다 대화일',`${pk.getMonth()+1}.${pk.getDate()}`,fmt(peak[1])+'건'],['1위 점유율',(U[0].n/total*100).toFixed(1)+'%',U[0].name]
+].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+
+const R300=u=>u.n>=300;
+const M=[
+ {k:'n',l:'메시지',f:u=>u.n,v:x=>fmt(x)},
+ {k:'perday',l:'일평균',f:u=>u.perday,v:x=>x.toFixed(1),filt:u=>u.n>=100},
+ {k:'kchar',l:'ㅋ 생산량',f:u=>u.kchar,v:x=>fmt(x)},
+ {k:'emo',l:'이모티콘',f:u=>u.emo,v:x=>fmt(x)},
+ {k:'photo',l:'사진',f:u=>u.photo,v:x=>fmt(x)},
+ {k:'q',l:'질문(?)',f:u=>u.q,v:x=>fmt(x)},
+ {k:'agree',l:'리액션',f:u=>u.agree+u.cry,v:x=>fmt(x)},
+ {k:'ment_in',l:'멘션 받음',f:u=>u.ment_in,v:x=>fmt(x)},
+ {k:'ment_out',l:'멘션 보냄',f:u=>u.ment_out,v:x=>fmt(x)},
+ {k:'days',l:'출석일',f:u=>u.days,v:x=>x+'일'},
+ {k:'opener',l:'하루 개시',f:u=>u.opener,v:x=>x+'회'},
+ {k:'avglen',l:'평균 글자',f:u=>u.avglen,v:x=>x.toFixed(1),filt:R300},
+ {k:'night',l:'심야(0~5시)',f:u=>u.night,v:x=>(x*100).toFixed(1)+'%',filt:R300},
+ {k:'morning',l:'아침(6~9시)',f:u=>u.morning,v:x=>(x*100).toFixed(1)+'%',filt:R300},
+ {k:'dele',l:'삭제',f:u=>u.dele,v:x=>fmt(x)},
+];
+const ranked=m=>U.filter(m.filt||(()=>true)).map(u=>[u,m.f(u)]).sort((a,b)=>b[1]-a[1]);
+let cur=M[0];
+$('#metricChips').innerHTML=M.map((m,i)=>`<button class="chip" id="mc-${m.k}" data-i="${i}" aria-pressed="${i===0}">${m.l}</button>`).join('');
+$('#metricChips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;cur=M[+b.dataset.i];
+  document.querySelectorAll('#metricChips .chip').forEach(c=>c.setAttribute('aria-pressed',c===b));renderBoard()});
+function renderBoard(){
+  const r=ranked(cur), mx=r[0][1]||1;
+  const p=[r[1],r[0],r[2]];
+  $('#podium').innerHTML=p.map((x,j)=>x?`<div class="pod ${j===1?'p1':''}"><div class="r">${[2,1,3][j]}</div><div class="nm">${x[0].name}</div><div><span class="tag t-${x[0].t}">${x[0].mbti}</span></div><div class="v">${cur.v(x[1])}</div></div>`:'<div></div>').join('');
+  $('#board').innerHTML=r.map(([u,v],i)=>`<div class="row"><span class="rk">${i+1}</span>${who(u)}<span class="bar"><i style="width:${Math.max(1,v/mx*100)}%;background:${col(u.t)}"></i></span><span class="val">${cur.v(v)}</span></div>`).join('');
+}
+renderBoard();
+const AW=[['n','수다 대마왕'],['kchar','ㅋ 공장장'],['emo','이모티콘 부자'],['photo','사진 기자'],['q','궁금증 해결사'],['agree','리액션 장인'],['ment_in','멘션 자석'],['ment_out','호출 담당'],['opener','하루 개시 담당'],['avglen','장문 작가'],['night','새벽 지박령'],['morning','아침형 인간'],['days','개근상'],['dele','삭제의 달인']];
+const award={};
+$('#awards').innerHTML=AW.map(([k,t])=>{const m=M.find(x=>x.k===k);const r=ranked(m);const [u,v]=r[0];(award[u.i]=award[u.i]||[]).push(t);
+  r.slice(1,3).forEach(([w],j)=>{(award[w.i]=award[w.i]||[]).push(t+' '+(j+2)+'위')});
+  return `<div class="aw"><span class="t">${t}</span><span class="n">${u.name}</span><span class="d"><span class="tag t-${u.t}">${u.mbti}</span> ${m.l} <span class="num">${m.v(v)}</span> · 2위 ${r[1][0].name}</span></div>`}).join('');
+
+// daily chart
+(function(){
+  const W=1080,H=240,pl=44,pr=12,pt=14,pb=28,data=D.daily,mx=Math.max(...data.map(d=>d[1]));
+  const yMax=Math.ceil(mx/1000)*1000;
+  const x=i=>pl+i*(W-pl-pr)/(data.length-1), y=v=>pt+(1-v/yMax)*(H-pt-pb);
+  let g='';for(let v=0;v<=yMax;v+=1000){g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v?fmt(v):0}</text>`}
+  const pts=data.map((d,i)=>`${x(i)},${y(d[1])}`).join(' ');
+  let xl='';data.forEach((d,i)=>{const dd=new Date(d[0]);if(dd.getDate()===1||dd.getDate()===15||i===0)xl+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle">${dd.getMonth()+1}.${dd.getDate()}</text>`});
+  const pi=data.findIndex(d=>d===peak);
+  const top=D.dailyTop[peak[0]];
+  $('#dailyChart').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="일별 메시지 수">${g}
+  <polygon points="${x(0)},${y(0)} ${pts} ${x(data.length-1)},${y(0)}" fill="var(--accent)" opacity=".14"/>
+  <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+  <circle cx="${x(pi)}" cy="${y(peak[1])}" r="5" fill="var(--accent)" stroke="var(--panel)" stroke-width="2"/>
+  <text x="${x(pi)+(pi>data.length*.8?-10:10)}" y="${y(peak[1])+4}" text-anchor="${pi>data.length*.8?'end':'start'}" style="fill:var(--ink);font-weight:700">${fmt(peak[1])}건</text>${xl}</svg>`;
+  $('#dailySub').textContent=`최다 대화일 ${pk.getMonth()+1}월 ${pk.getDate()}일 ${fmt(peak[1])}건 · 그날 1위 ${U[top[0]].name} (${fmt(top[1])}건)`;
+})();
+// heat
+(function(){
+  const W=['월','화','수','목','금','토','일'],mx=Math.max(...D.hw.flat());
+  let h='<div class="lb"></div>';for(let i=0;i<24;i++)h+=`<div class="lb">${i%3===0?i:''}</div>`;
+  D.hw.forEach((r,w)=>{h+=`<div class="lb">${W[w]}</div>`;r.forEach((v,i)=>{const a=Math.pow(v/mx,.8);h+=`<div title="${W[w]} ${i}시 · ${fmt(v)}건" style="background:color-mix(in srgb,var(--heat1) ${Math.round(a*100)}%,var(--heat0))"></div>`})});
+  $('#heat').innerHTML=h;
+})();
+(function(){const mx=D.words[0][1],mn=D.words[D.words.length-1][1];
+  $('#cloud').innerHTML=D.words.map(([w,c],i)=>`<span style="font-size:${14+ (c-mn)/(mx-mn)*20}px;color:${i<3?'var(--accent)':'var(--ink)'}">${w}<small>${fmt(c)}</small></span>`).join('');
+})();
+
+/* ---------- page 2 ---------- */
+const TT={화력:'채팅방 발전소',텐션:'ㅋㅋ 무한동력',공감:'리액션 장인',진지:'장문 철학자',짤력:'짤 수집가',인싸력:'멘션 자석'};
+const ADJ={화력:'쉴 틈 없는',텐션:'하이텐션',공감:'다정한',진지:'진지한',짤력:'비주얼파',인싸력:'마당발'};
+function arch(u){const o=u.hex.map((v,i)=>[v,AX[i]]).slice(1).sort((a,b)=>b[0]-a[0]);
+  if(u.hex[0]<45&&o[0][0]<70)return (o[0][0]>=60?ADJ[o[0][1]]+' ':'')+'조용한 관찰자';
+  const adj=u.hex[0]>=85?ADJ['화력']:ADJ[o[1][1]];return adj+' '+TT[o[0][1]]}
+const slot=h=>h<5?'새벽':h<9?'이른 아침':h<12?'오전':h<14?'점심':h<18?'오후':h<21?'저녁':'밤';
+function persona(u){
+  const s=[];
+  s.push(`${slot(u.peak)} ${u.peak}시에 가장 활발한 편`);
+  if(u.n>=300&&u.night>.1)s.push('심야에도 자주 출몰');
+  else if(u.n>=300&&u.morning>.2)s.push('아침 대화를 여는 편');
+  s.push(u.avglen>=12?`한 번에 평균 ${u.avglen}자로 길게 씀`:u.avglen<=6?`평균 ${u.avglen}자의 짧고 빠른 티키타카형`:`평균 ${u.avglen}자 길이로 말함`);
+  if(u.best[0])s.push(`가장 많이 주고받는 상대는 ${U[u.best[0][0]].name}`);
+  return s.join(' · ')+'.';
+}
+function hexSvg(u){
+  const R=70,cx=0,cy=0,pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/3;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]};
+  let g='';[25,50,75,100].forEach(p=>{g+=`<polygon points="${[0,1,2,3,4,5].map(i=>pt(i,R*p/100).join(',')).join(' ')}" fill="none" stroke="var(--line)"/>`});
+  [0,1,2,3,4,5].forEach(i=>{const[a,b]=pt(i,R);g+=`<line x1="0" y1="0" x2="${a}" y2="${b}" stroke="var(--line)"/>`});
+  const poly=u.hex.map((v,i)=>pt(i,R*v/100).join(',')).join(' ');
+  let lb='';AX.forEach((a,i)=>{const[x,y]=pt(i,R+18);const anc=Math.abs(x)<5?'middle':x>0?'start':'end';
+    lb+=`<text x="${x}" y="${y-2}" text-anchor="${anc}">${a}</text><text class="vv" x="${x}" y="${y+10}" text-anchor="${anc}">${u.hex[i]}</text>`});
+  return `<svg class="hex" viewBox="-118 -104 236 206" role="img" aria-label="${u.name} 육각형 스탯">${g}<polygon points="${poly}" fill="${col(u.t)}" fill-opacity=".28" stroke="${col(u.t)}" stroke-width="2"/>${u.hex.map((v,i)=>{const[x,y]=pt(i,R*v/100);return`<circle cx="${x}" cy="${y}" r="2.6" fill="${col(u.t)}"/>`}).join('')}${lb}</svg>`;
+}
+function card(u){
+  const b=(award[u.i]||[]).filter(x=>!/[23]위$/.test(x)).concat((award[u.i]||[]).filter(x=>/[23]위$/.test(x))).slice(0,4);
+  return `<article class="card"><div class="card-top bg-${u.t}"><span class="nm">${u.name}</span><span class="rk">#${u.rank}</span>
+  <span class="mb">${u.mbti} · ${u.sex} ${u.age}</span><span class="rk">${fmt(u.n)}건</span><span class="arch">${arch(u)}</span></div>
+  <div class="card-body">${hexSvg(u)}
+  <div class="mini"><div><div class="l">일평균</div><div class="v">${u.perday}</div></div><div><div class="l">출석</div><div class="v">${u.days}일</div></div><div><div class="l">피크</div><div class="v">${u.peak}시</div></div><div><div class="l">평균 글자</div><div class="v">${u.avglen}</div></div></div>
+  <p class="desc">${persona(u)}</p>
+  <dl class="kv"><dt>키워드</dt><dd>${u.words.length?u.words.map(w=>`<span class="pill">${w}</span>`).join(''):'<span class="note">표본 부족</span>'}</dd>
+  <dt>말버릇</dt><dd>${u.habit.length?u.habit.map(w=>`<span class="pill">${w}</span>`).join(''):'<span class="note">표본 부족</span>'}</dd>
+  <dt>베프</dt><dd>${u.best.map(([j])=>who(U[j])).join('')||'-'}</dd></dl>
+  ${b.length?`<div class="badges">${b.map(x=>`<span class="badge">${x}</span>`).join('')}</div>`:''}
+  </div></article>`;
+}
+let tf='ALL';
+$('#tempChips').innerHTML=[['ALL','전체'],['NT','NT'],['NF','NF'],['SJ','SJ'],['SP','SP']].map(([k,l])=>`<button class="chip" id="tc-${k}" data-k="${k}" aria-pressed="${k==='ALL'}">${l}</button>`).join('');
+$('#tempChips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;tf=b.dataset.k;document.querySelectorAll('#tempChips .chip').forEach(c=>c.setAttribute('aria-pressed',c===b));renderCards()});
+$('#q').addEventListener('input',renderCards);$('#sort').addEventListener('change',renderCards);
+function renderCards(){
+  const q=$('#q').value.trim().toUpperCase(),s=$('#sort').value;
+  let L=U.filter(u=>(tf==='ALL'||u.t===tf)&&(!q||u.name.includes(q)||u.mbti.includes(q)||u.name.toUpperCase().includes(q)));
+  L.sort((a,b)=>s==='mbti'?a.mbti.localeCompare(b.mbti)||b.n-a.n:b[s]-a[s]);
+  $('#cards').innerHTML=L.length?L.map(card).join(''):'<div class="empty">조건에 맞는 멤버 없음</div>';
+}
+renderCards();
+
+/* ---------- page 3 ---------- */
+const verdict=s=>s>=85?'영혼의 단짝':s>=75?'찰떡 티키타카':s>=65?'알고 보면 잘 맞음':s>=55?'무난한 사이':s>=45?'아직 탐색 중':'평행선 관계';
+function side(i){
+  const u=U[i];
+  const L=U.filter(v=>v.i!==i).map(v=>[v,C(i,v.i)]).sort((a,b)=>b[1][0]-a[1][0]);
+  const T=U.filter(v=>v.i!==i).map(v=>[v,C(i,v.i)[5]]).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const li=(x,v)=>`<li data-j="${x.i}">${who(x)}<span class="sc">${v}</span></li>`;
+  $('#side').innerHTML=`<div class="eyebrow">선택한 멤버</div><h3>${u.name} <span class="tag t-${u.t}">${u.mbti}</span></h3><p class="note" style="margin:4px 0 14px">${arch(u)} · ${fmt(u.n)}건</p>
+  <div style="display:grid;gap:16px">
+  <div><h2 style="font-size:16px">궁합 TOP 5</h2><ul class="lst">${L.slice(0,5).map(([v,c])=>li(v,c[0]+'점')).join('')}</ul></div>
+  <div><h2 style="font-size:16px">대화량 TOP 5</h2><ul class="lst">${T.map(([v,c])=>li(v,fmt(c))).join('')}</ul></div>
+  <div><h2 style="font-size:16px">상극 3</h2><ul class="lst">${L.slice(-3).reverse().map(([v,c])=>li(v,c[0]+'점')).join('')}</ul></div></div>`;
+  $('#side').querySelectorAll('li').forEach(el=>el.addEventListener('click',()=>{setPair(i,+el.dataset.j)}));
+}
+function setPair(a,b){$('#ca').value=a;$('#cb').value=b;calc();$('#ca').scrollIntoView({behavior:'smooth',block:'center'})}
+const opts=U.map(u=>`<option value="${u.i}">${u.name} · ${u.mbti}</option>`).join('');
+$('#ca').innerHTML=opts;$('#cb').innerHTML=opts;$('#ca').value=0;$('#cb').value=1;
+$('#ca').addEventListener('change',calc);$('#cb').addEventListener('change',calc);
+function calc(){
+  const a=+$('#ca').value,b=+$('#cb').value;
+  if(a===b){$('#calcOut').innerHTML='<p class="note" style="margin-top:14px">서로 다른 두 명을 골라야 함.</p>';return}
+  const c=C(a,b),A=U[a],B=U[b];
+  const parts=[['대화 케미',c[1]],['생활 리듬',c[2]],['MBTI 궁합',c[3]],['말투 싱크',c[4]]];
+  const best=parts.slice().sort((x,y)=>y[1]-x[1])[0][0];
+  $('#calcOut').innerHTML=`<div class="score"><span class="big">${c[0]}</span><span class="verdict">${verdict(c[0])}</span></div>
+  <p class="note">${A.name}·${B.name} 사이 2분 내 주고받은 대화+멘션 <b class="num">${fmt(c[5])}</b>회 · 가장 강한 연결고리는 <b>${best}</b></p>
+  <div class="brk">${parts.map(([l,v])=>`<div class="r"><span>${l}</span><span class="b"><i style="width:${v}%"></i></span><span class="num">${v}</span></div>`).join('')}</div>`;
+}
+calc();
+(function(){const P=[];for(let i=0;i<N;i++)for(let j=i+1;j<N;j++)P.push([i,j,C(i,j)]);
+  P.sort((a,b)=>b[2][0]-a[2][0]);
+  $('#bestPairs').innerHTML=P.slice(0,10).map(([i,j,c])=>`<li data-a="${i}" data-b="${j}"><span class="pr">${who(U[i])}<span class="note">×</span>${who(U[j])}</span><span class="num" style="font-weight:700">${c[0]}점</span></li>`).join('');
+  $('#bestPairs').querySelectorAll('li').forEach(el=>el.addEventListener('click',()=>setPair(+el.dataset.a,+el.dataset.b)));
+})();
+(function(){
+  let h=`<div class="h"></div>`+U.map(u=>`<div class="h v">${u.name}</div>`).join('');
+  const all=[];for(let i=0;i<N;i++)for(let j=i+1;j<N;j++)all.push(C(i,j)[0]);
+  const mn=Math.min(...all),mx=Math.max(...all);
+  U.forEach(a=>{h+=`<div class="h">${a.name}</div>`;U.forEach(b=>{if(a.i===b.i){h+=`<div style="background:var(--line);cursor:default"></div>`;return}
+    const s=C(a.i,b.i)[0],p=Math.round(Math.pow((s-mn)/(mx-mn),1.4)*100);
+    h+=`<div data-a="${a.i}" data-b="${b.i}" title="${a.name} × ${b.name} · ${s}점" style="background:color-mix(in srgb,var(--heat1) ${p}%,var(--heat0))"></div>`})});
+  const m=$('#matrix');m.style.gridTemplateColumns=`auto repeat(${N},16px)`;m.innerHTML=h;
+  m.addEventListener('click',e=>{const d=e.target.closest('[data-a]');if(d)setPair(+d.dataset.a,+d.dataset.b)});
+})();
+side(0);
+function drawNet(){
+  if(typeof d3==='undefined'){$('#net').outerHTML='<p class="empty">관계도 라이브러리를 불러오지 못함. 인터넷 연결 확인 필요.</p>';return}
+  const svg=d3.select('#net');const el=svg.node();
+  const W=el.clientWidth||700,H=el.clientHeight||560;svg.attr('viewBox',`0 0 ${W} ${H}`);
+  const nodes=U.map(u=>({id:u.i,u}));
+  const E=new Map();
+  U.forEach(u=>{const L=U.filter(v=>v.i!==u.i).map(v=>[v.i,C(u.i,v.i)]).sort((a,b)=>b[1][5]-a[1][5]).slice(0,3);
+    L.forEach(([j,c])=>{const k=Math.min(u.i,j)+'-'+Math.max(u.i,j);if(c[5]>0)E.set(k,{source:u.i,target:j,w:c[5]})})});
+  for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const c=C(i,j);if(c[5]>=600)E.set(i+'-'+j,{source:i,target:j,w:c[5]})}
+  const links=[...E.values()],wmax=d3.max(links,l=>l.w);
+  const r=d3.scaleSqrt().domain([0,d3.max(U,u=>u.n)]).range([4,26]);
+  const sim=d3.forceSimulation(nodes).force('link',d3.forceLink(links).id(d=>d.id).distance(l=>170-100*Math.sqrt(l.w/wmax)).strength(.3))
+    .force('charge',d3.forceManyBody().strength(-380)).force('center',d3.forceCenter(W/2,H/2))
+    .force('collide',d3.forceCollide(d=>r(d.u.n)+4)).force('x',d3.forceX(W/2).strength(.03)).force('y',d3.forceY(H/2).strength(.05));
+  const lk=svg.append('g').selectAll('line').data(links).join('line').attr('stroke','var(--mute)').attr('stroke-opacity',l=>.15+.55*l.w/wmax).attr('stroke-width',l=>.6+5*Math.sqrt(l.w/wmax));
+  const nd=svg.append('g').selectAll('g').data(nodes).join('g').style('cursor','pointer');
+  nd.append('circle').attr('r',d=>r(d.u.n)).attr('fill',d=>col(d.u.t)).attr('stroke','var(--panel)').attr('stroke-width',2);
+  nd.append('text').attr('text-anchor','middle').attr('dy',d=>r(d.u.n)+12).text(d=>d.u.name);
+  nd.append('title').text(d=>`${d.u.name} ${d.u.mbti} · ${d.u.n}건`);
+  let sel=0;
+  function hi(i){sel=i;const nb=new Set([i]);links.forEach(l=>{if(l.source.id===i)nb.add(l.target.id);if(l.target.id===i)nb.add(l.source.id)});
+    nd.attr('opacity',d=>nb.has(d.id)?1:.25);lk.attr('stroke',l=>l.source.id===i||l.target.id===i?'var(--accent)':'var(--mute)').attr('stroke-opacity',l=>l.source.id===i||l.target.id===i?.9:.08);
+    nd.select('circle').attr('stroke',d=>d.id===i?'var(--ink)':'var(--panel)').attr('stroke-width',d=>d.id===i?3:2)}
+  nd.on('click',(e,d)=>{hi(d.id);side(d.id)});
+  nd.call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.2).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
+  sim.on('tick',()=>{nodes.forEach(d=>{const rr=r(d.u.n)+2;d.x=Math.max(rr,Math.min(W-rr,d.x));d.y=Math.max(rr,Math.min(H-rr-12,d.y))});
+    lk.attr('x1',l=>l.source.x).attr('y1',l=>l.source.y).attr('x2',l=>l.target.x).attr('y2',l=>l.target.y);nd.attr('transform',d=>`translate(${d.x},${d.y})`)});
+  hi(0);
+}
+/* init tab */
+let start=(location.hash||'').slice(1);
+if(!['rank','cards','chem'].includes(start)){try{start=localStorage.getItem('mbtiTab')||'rank'}catch(e){start='rank'}}
+if(!['rank','cards','chem'].includes(start))start='rank';
+show(start);
+})();
+</script>
